@@ -1,0 +1,47 @@
+name: Build and Deploy Dashboard
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Checkout agricola-core
+        uses: actions/checkout@v4
+        with:
+          repository: ratiebareeng/agricola-core
+          path: agricola-core
+          token: ${{ secrets.GH_PAT }}
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Update core dependency path for CI
+        run: |
+          sed -i 's|path: ../agricola-core|path: ./agricola-core|' pubspec.yaml
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build web
+        run: flutter build web --release --dart-define=ENVIRONMENT=production
+
+      - name: Deploy via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ftp.agricola-app.com
+          username: ${{ secrets.DASHBOARD_FTP_USERNAME }}
+          password: ${{ secrets.DASHBOARD_FTP_PASSWORD }}
+          port: 21
+          local-dir: ./build/web/
+          server-dir: /
+          dangerous-clean-slate: false
