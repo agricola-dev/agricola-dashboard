@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.0 — 2026-03-08
+
+### Features
+- Restrict dashboard to tablet/desktop viewports (768px minimum width)
+- Mobile visitors see a redirect screen prompting them to open or download the Agricola app
+- Bilingual support (English/Setswana) on the mobile redirect screen
+- Added url_launcher dependency for deep-linking into the native app
+
 ## 0.3.1 — 2026-03-08
 
 ### Bug Fixes
