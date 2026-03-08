@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.1 — 2026-03-08
+
+### Bug Fixes
+- Replace generic leaf icon with real Agricola logo on login screen
+- Fix Google Sign-In by adding web OAuth client ID meta tag to index.html
+
 ## 0.3.0 — 2026-03-08
 
 ### Phase 2: Dashboard Stats

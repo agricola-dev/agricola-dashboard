@@ -176,7 +176,14 @@ class _BrandHeader extends StatelessWidget {
 
     return Column(
       children: [
-        Icon(Icons.eco, size: 64, color: colors.primary),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: Image.asset(
+            'assets/icons/icon_square.jpg',
+            width: 80,
+            height: 80,
+          ),
+        ),
         const SizedBox(height: 12),
         Text(
           t('app_title', lang),
