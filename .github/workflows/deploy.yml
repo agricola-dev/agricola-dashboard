@@ -18,7 +18,6 @@ jobs:
         with:
           repository: ratiebareeng/agricola-core
           path: agricola-core
-          token: ${{ secrets.GH_PAT }}
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
