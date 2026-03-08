@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.3.0 — 2026-03-08
+
+### Phase 2: Dashboard Stats
+- Dashboard screen with role-based stat cards (merchant: inventory, listings, orders, revenue, purchases, suppliers; farmer: crops, harvests, yield, loss, inventory, field size)
+- Analytics provider layer using core's AnalyticsApiService (GET /api/v1/analytics)
+- Period filter widget (week/month/year/all time) with automatic data refetch
+- Reusable StatCard widget for dashboard grids
+- Charts via fl_chart: revenue vs purchases bar chart, inventory donut chart (merchant); crop status donut, yield vs loss bar chart (farmer)
+- Responsive grid layout adapting to screen width
+- Loading, error (with retry), and empty states
+- Added fl_chart dependency
+- Added 18 bilingual translation keys to agricola_core (dashboard stats, periods, chart labels)
+
 ## 0.2.0 — 2026-03-08
 
 ### Phase 1: Auth & Layout Shell
