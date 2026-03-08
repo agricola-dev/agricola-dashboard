@@ -11,14 +11,12 @@ class StatCard extends StatelessWidget {
     required this.label,
     required this.value,
     this.subtitle,
-    this.iconColor,
   });
 
   final IconData icon;
   final String label;
   final String value;
   final String? subtitle;
-  final Color? iconColor;
 
   @override
   Widget build(BuildContext context) {
@@ -37,22 +35,17 @@ class StatCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: (iconColor ?? colors.primary).withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(
-                    icon,
-                    size: 20,
-                    color: iconColor ?? colors.primary,
-                  ),
-                ),
-                const Spacer(),
-              ],
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: colors.primary.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(
+                icon,
+                size: 20,
+                color: colors.primary,
+              ),
             ),
             const SizedBox(height: 16),
             Text(

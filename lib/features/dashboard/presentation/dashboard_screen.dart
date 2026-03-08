@@ -99,11 +99,11 @@ class _DashboardContent extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final crossAxisCount = constraints.maxWidth > 1000
-            ? 4
-            : constraints.maxWidth > 600
-                ? 3
-                : 2;
+        final crossAxisCount = constraints.maxWidth > 800
+            ? 3
+            : constraints.maxWidth > 500
+                ? 2
+                : 1;
 
         return GridView.count(
           crossAxisCount: crossAxisCount,
@@ -111,7 +111,7 @@ class _DashboardContent extends StatelessWidget {
           physics: const NeverScrollableScrollPhysics(),
           mainAxisSpacing: 16,
           crossAxisSpacing: 16,
-          childAspectRatio: 1.6,
+          childAspectRatio: 1.8,
           children: cards,
         );
       },
@@ -127,19 +127,16 @@ class _DashboardContent extends StatelessWidget {
         subtitle: analytics.inventory.criticalItems > 0
             ? '${analytics.inventory.criticalItems} ${t('critical_items', lang)}'
             : null,
-        iconColor: const Color(0xFF2D6A4F),
       ),
       StatCard(
         icon: Icons.storefront_outlined,
         label: t('active_listings', lang),
         value: '${analytics.marketplace.activeListings}',
-        iconColor: const Color(0xFF0077B6),
       ),
       StatCard(
         icon: Icons.receipt_long_outlined,
         label: t('active_orders', lang),
         value: '${analytics.orders.active}',
-        iconColor: const Color(0xFFE76F51),
       ),
       StatCard(
         icon: Icons.trending_up_outlined,
@@ -147,20 +144,17 @@ class _DashboardContent extends StatelessWidget {
         value: _formatCurrency(analytics.orders.periodRevenue),
         subtitle:
             '${t('total', lang)}: ${_formatCurrency(analytics.orders.totalRevenue)}',
-        iconColor: const Color(0xFF2A9D8F),
       ),
       StatCard(
         icon: Icons.shopping_cart_outlined,
         label: t('total_purchases', lang),
         value: '${analytics.purchases.total}',
         subtitle: _formatCurrency(analytics.purchases.periodValue),
-        iconColor: const Color(0xFF6A4C93),
       ),
       StatCard(
         icon: Icons.people_outlined,
         label: t('unique_suppliers', lang),
         value: '${analytics.purchases.uniqueSuppliers}',
-        iconColor: const Color(0xFFF4A261),
       ),
     ];
   }
@@ -173,25 +167,21 @@ class _DashboardContent extends StatelessWidget {
         value: '${analytics.crops.active}',
         subtitle:
             '${analytics.crops.harvested} ${t('harvested', lang)}',
-        iconColor: const Color(0xFF2D6A4F),
       ),
       StatCard(
         icon: Icons.calendar_today_outlined,
         label: t('upcoming_harvests', lang),
         value: '${analytics.crops.upcomingHarvests}',
-        iconColor: const Color(0xFFE76F51),
       ),
       StatCard(
         icon: Icons.scale_outlined,
         label: t('total_yield', lang),
         value: _formatWeight(analytics.harvests.totalYield),
-        iconColor: const Color(0xFF2A9D8F),
       ),
       StatCard(
         icon: Icons.warning_amber_outlined,
         label: t('total_loss', lang),
         value: _formatWeight(analytics.harvests.totalLoss),
-        iconColor: const Color(0xFFD62828),
       ),
       StatCard(
         icon: Icons.inventory_2_outlined,
@@ -200,28 +190,23 @@ class _DashboardContent extends StatelessWidget {
         subtitle: analytics.inventory.criticalItems > 0
             ? '${analytics.inventory.criticalItems} ${t('critical_items', lang)}'
             : null,
-        iconColor: const Color(0xFF0077B6),
       ),
       StatCard(
         icon: Icons.landscape_outlined,
         label: t('total_field_size', lang),
         value: _formatArea(analytics.crops.totalFieldSize),
-        iconColor: const Color(0xFF6A4C93),
       ),
     ];
   }
 
   Widget _buildChartsSection(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-
     return LayoutBuilder(
       builder: (context, constraints) {
         final isWide = constraints.maxWidth > 700;
 
         final charts = userType == UserType.merchant
-            ? _merchantCharts(colors, textTheme)
-            : _farmerCharts(colors, textTheme);
+            ? _merchantCharts()
+            : _farmerCharts();
 
         if (isWide) {
           return Row(
@@ -246,7 +231,7 @@ class _DashboardContent extends StatelessWidget {
     );
   }
 
-  List<Widget> _merchantCharts(ColorScheme colors, TextTheme textTheme) {
+  List<Widget> _merchantCharts() {
     return [
       _ChartCard(
         title: t('revenue_overview', lang),
@@ -268,7 +253,7 @@ class _DashboardContent extends StatelessWidget {
     ];
   }
 
-  List<Widget> _farmerCharts(ColorScheme colors, TextTheme textTheme) {
+  List<Widget> _farmerCharts() {
     return [
       _ChartCard(
         title: t('crop_overview', lang),
@@ -427,7 +412,7 @@ class _RevenueBarChart extends StatelessWidget {
           BarChartGroupData(x: 0, barRods: [
             BarChartRodData(
               toY: periodRevenue,
-              color: const Color(0xFF2A9D8F),
+              color: colors.primary,
               width: 40,
               borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),
             ),
@@ -435,7 +420,7 @@ class _RevenueBarChart extends StatelessWidget {
           BarChartGroupData(x: 1, barRods: [
             BarChartRodData(
               toY: periodPurchases,
-              color: const Color(0xFF6A4C93),
+              color: colors.tertiary,
               width: 40,
               borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),
             ),
@@ -487,10 +472,10 @@ class _InventoryPieChart extends StatelessWidget {
               sections: [
                 PieChartSectionData(
                   value: healthy.toDouble(),
-                  color: const Color(0xFF2A9D8F),
+                  color: colors.primary,
                   title: '$healthy',
-                  titleStyle: const TextStyle(
-                    color: Colors.white,
+                  titleStyle: TextStyle(
+                    color: colors.onPrimary,
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
                   ),
@@ -499,10 +484,10 @@ class _InventoryPieChart extends StatelessWidget {
                 if (critical > 0)
                   PieChartSectionData(
                     value: critical.toDouble(),
-                    color: const Color(0xFFD62828),
+                    color: colors.error,
                     title: '$critical',
-                    titleStyle: const TextStyle(
-                      color: Colors.white,
+                    titleStyle: TextStyle(
+                      color: colors.onError,
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
                     ),
@@ -510,10 +495,10 @@ class _InventoryPieChart extends StatelessWidget {
                   ),
                 PieChartSectionData(
                   value: activeListings.toDouble(),
-                  color: const Color(0xFF0077B6),
+                  color: colors.tertiary,
                   title: '$activeListings',
-                  titleStyle: const TextStyle(
-                    color: Colors.white,
+                  titleStyle: TextStyle(
+                    color: colors.onTertiary,
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
                   ),
@@ -529,19 +514,19 @@ class _InventoryPieChart extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _LegendItem(
-              color: const Color(0xFF2A9D8F),
+              color: colors.primary,
               label: t('healthy_stock', lang),
             ),
             const SizedBox(height: 8),
             if (critical > 0) ...[
               _LegendItem(
-                color: const Color(0xFFD62828),
+                color: colors.error,
                 label: t('critical_items', lang),
               ),
               const SizedBox(height: 8),
             ],
             _LegendItem(
-              color: const Color(0xFF0077B6),
+              color: colors.tertiary,
               label: t('active_listings', lang),
             ),
           ],
@@ -589,10 +574,10 @@ class _CropPieChart extends StatelessWidget {
               sections: [
                 PieChartSectionData(
                   value: active.toDouble(),
-                  color: const Color(0xFF2D6A4F),
+                  color: colors.primary,
                   title: '$active',
-                  titleStyle: const TextStyle(
-                    color: Colors.white,
+                  titleStyle: TextStyle(
+                    color: colors.onPrimary,
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
                   ),
@@ -600,10 +585,10 @@ class _CropPieChart extends StatelessWidget {
                 ),
                 PieChartSectionData(
                   value: harvested.toDouble(),
-                  color: const Color(0xFFF4A261),
+                  color: colors.tertiary,
                   title: '$harvested',
-                  titleStyle: const TextStyle(
-                    color: Colors.white,
+                  titleStyle: TextStyle(
+                    color: colors.onTertiary,
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
                   ),
@@ -619,12 +604,12 @@ class _CropPieChart extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _LegendItem(
-              color: const Color(0xFF2D6A4F),
+              color: colors.primary,
               label: t('active_crops', lang),
             ),
             const SizedBox(height: 8),
             _LegendItem(
-              color: const Color(0xFFF4A261),
+              color: colors.tertiary,
               label: t('harvested', lang),
             ),
           ],
@@ -708,7 +693,7 @@ class _YieldLossBarChart extends StatelessWidget {
           BarChartGroupData(x: 0, barRods: [
             BarChartRodData(
               toY: totalYield,
-              color: const Color(0xFF2A9D8F),
+              color: colors.primary,
               width: 40,
               borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),
             ),
@@ -716,7 +701,7 @@ class _YieldLossBarChart extends StatelessWidget {
           BarChartGroupData(x: 1, barRods: [
             BarChartRodData(
               toY: totalLoss,
-              color: const Color(0xFFD62828),
+              color: colors.error,
               width: 40,
               borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),
             ),
