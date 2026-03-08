@@ -43,5 +43,5 @@ jobs:
           password: ${{ secrets.DASHBOARD_FTP_PASSWORD }}
           port: 21
           local-dir: ./build/web/
-          server-dir: /
+          server-dir: /dashboard.agricola-app.com/
           dangerous-clean-slate: false
