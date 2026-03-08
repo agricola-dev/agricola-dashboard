@@ -16,7 +16,7 @@ jobs:
       - name: Checkout agricola-core
         uses: actions/checkout@v4
         with:
-          repository: ratiebareeng/agricola-core
+          repository: agricola-dev/agricola-core
           path: agricola-core
 
       - name: Set up Flutter
