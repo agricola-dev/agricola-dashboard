@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.2.0 — 2026-03-08
+
+### Phase 1: Auth & Layout Shell
+- Login screen with email/password and Google Sign-In (Firebase Web SDK)
+- Auth state management via Riverpod StreamProvider wrapping Firebase authStateChanges
+- WebAuthRepository implementing core's AuthRepository interface
+- LoginController (AsyncNotifier) for sign-in, Google auth, and password reset
+- GoRouter with auth redirect guard (unauthenticated -> /login)
+- Dashboard shell layout: sidebar + header + content area
+- Role-based sidebar navigation (merchant vs farmer nav items)
+- Language toggle (EN/Setswana) on login screen and header, reusing core's t()
+- User profile tile in sidebar footer with email, role, and logout
+- Breadcrumb navigation in header from current route
+- Reusable widget library: AppTextField, AppDropdownField<T>, AppPrimaryButton, AppSecondaryButton, AppTertiaryButton, LanguageToggle, LabeledDivider
+- Added go_router, google_sign_in, fpdart dependencies
+- Added missing translation keys to agricola_core (harvests, forgot_password, sign_in_with_google, etc.)
+
 ## 0.1.0 — 2026-03-08
 
 ### Phase 0: Project Setup & Foundation
