@@ -46,3 +46,16 @@ class ConditionColors {
 
   // Critical — uses theme error tokens (passed in at call site)
 }
+
+/// Semantic colors for marketplace listing types.
+class ListingTypeColors {
+  ListingTypeColors._();
+
+  // Produce — green
+  static const produceBackground = Color(0xFFE8F5E9);
+  static const produceForeground = Color(0xFF2E7D32);
+
+  // Supplies — blue
+  static const suppliesBackground = Color(0xFFE3F2FD);
+  static const suppliesForeground = Color(0xFF1565C0);
+}

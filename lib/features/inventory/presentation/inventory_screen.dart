@@ -1,9 +1,12 @@
 import 'package:agricola_core/agricola_core.dart';
 import 'package:agricola_dashboard/core/providers/language_provider.dart';
 import 'package:agricola_dashboard/core/widgets/app_text_field.dart';
+import 'package:agricola_dashboard/features/auth/providers/auth_providers.dart';
 import 'package:agricola_dashboard/features/inventory/presentation/inventory_form_dialog.dart';
 import 'package:agricola_dashboard/features/inventory/presentation/widgets/condition_badge.dart';
 import 'package:agricola_dashboard/features/inventory/providers/inventory_providers.dart';
+import 'package:agricola_dashboard/features/marketplace/presentation/marketplace_form_dialog.dart';
+import 'package:agricola_dashboard/features/marketplace/providers/marketplace_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -177,6 +180,11 @@ class _InventoryContent extends ConsumerWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               IconButton(
+                icon: const Icon(Icons.storefront_outlined, size: 20),
+                tooltip: t('list_on_marketplace', lang),
+                onPressed: () => _listOnMarketplace(context, ref, item),
+              ),
+              IconButton(
                 icon: const Icon(Icons.edit_outlined, size: 20),
                 tooltip: t('edit_inventory', lang),
                 onPressed: () => _editItem(context, ref, item),
@@ -197,6 +205,36 @@ class _InventoryContent extends ConsumerWidget {
     ref.read(inventorySortProvider.notifier).state = InventorySort(
       field: field,
       ascending: ascending,
+    );
+  }
+
+  Future<void> _listOnMarketplace(
+    BuildContext context,
+    WidgetRef ref,
+    InventoryModel item,
+  ) async {
+    final user = ref.read(currentUserProvider);
+    if (user == null) return;
+
+    final result = await showMarketplaceFormDialog(
+      context,
+      lang: lang,
+      sellerId: user.uid,
+      sellerName: user.email,
+      inventoryItem: item,
+    );
+    if (result == null || !context.mounted) return;
+
+    final error = await ref
+        .read(myListingsControllerProvider.notifier)
+        .createListing(result);
+
+    if (!context.mounted) return;
+    _showResultSnackBar(
+      context,
+      error: error,
+      successKey: 'listed_on_marketplace',
+      lang: lang,
     );
   }
 

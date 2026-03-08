@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.6.0 — 2026-03-08
+
+### Phase 4: Marketplace Listings (Merchant)
+- Two-tab marketplace screen: "My Listings" DataTable + "Browse Marketplace" responsive card grid
+- Full CRUD via MarketplaceFormDialog: title, description, type (produce/supplies), category, price, unit, quantity, location, crop status, harvest date
+- MyListingsController (AsyncNotifier) with create, update, delete operations filtered by current user
+- BrowseListingsController with MarketplaceFilter support (search, type, category, price range)
+- Search filtering and sortable columns (title, price, created date) on My Listings
+- Browse filter bar with type dropdown and clear filters action
+- ListingTypeBadge widget with centralized ListingTypeColors in app_theme.dart
+- PriceDisplay widget showing formatted price with unit or "Price on request"
+- "List on Marketplace" action button on inventory rows — pre-fills listing form from inventory item
+- Browse grid adapts columns based on viewport width (1/2/3 columns)
+- ListingCard widget with title, type badge, description, price, location, and seller info
+- Empty state, loading state, and error state with retry on both tabs
+- Wired marketplace route replacing placeholder in app_router.dart
+- Added 14 bilingual translation keys to agricola_core (marketplace labels, filters, form fields)
+
 ## 0.5.0 — 2026-03-08
 
 ### Phase 3: Inventory Management (Merchant)
