@@ -1,6 +1,7 @@
 import 'package:agricola_dashboard/features/auth/presentation/login_screen.dart';
 import 'package:agricola_dashboard/features/auth/providers/auth_providers.dart';
 import 'package:agricola_dashboard/features/dashboard/presentation/dashboard_screen.dart';
+import 'package:agricola_dashboard/features/inventory/presentation/inventory_screen.dart';
 import 'package:agricola_dashboard/features/shell/presentation/dashboard_shell.dart';
 import 'package:agricola_dashboard/routing/route_names.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +42,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           GoRoute(
             path: RouteNames.inventory,
-            builder: (context, state) => const _PlaceholderPage(title: 'Inventory'),
+            builder: (context, state) => const InventoryScreen(),
           ),
           GoRoute(
             path: RouteNames.marketplace,

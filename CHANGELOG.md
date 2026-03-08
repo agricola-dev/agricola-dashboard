@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.5.0 — 2026-03-08
+
+### Phase 3: Inventory Management (Merchant)
+- Full CRUD inventory screen with DataTable (crop type, quantity, unit, condition, storage location, days in storage)
+- Add/edit inventory dialog using shared AppTextField, AppDropdownField, and date picker widgets
+- InventoryController (AsyncNotifier) with create, update, delete operations and error handling
+- Real-time search filtering by crop type, storage location, and condition
+- Sortable table columns (crop type, quantity, storage date)
+- ConditionBadge widget with centralized ConditionColors in app_theme.dart
+- Delete confirmation dialog with bilingual support
+- Empty state, loading state, and error state with retry
+- Wired inventory route replacing placeholder in app_router.dart
+
 ## 0.4.0 — 2026-03-08
 
 ### Features
