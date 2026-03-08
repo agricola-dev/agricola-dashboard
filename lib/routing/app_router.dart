@@ -3,6 +3,8 @@ import 'package:agricola_dashboard/features/auth/providers/auth_providers.dart';
 import 'package:agricola_dashboard/features/dashboard/presentation/dashboard_screen.dart';
 import 'package:agricola_dashboard/features/inventory/presentation/inventory_screen.dart';
 import 'package:agricola_dashboard/features/marketplace/presentation/marketplace_screen.dart';
+import 'package:agricola_dashboard/features/orders/presentation/orders_screen.dart';
+import 'package:agricola_dashboard/features/purchases/presentation/purchases_screen.dart';
 import 'package:agricola_dashboard/features/shell/presentation/dashboard_shell.dart';
 import 'package:agricola_dashboard/routing/route_names.dart';
 import 'package:flutter/material.dart';
@@ -51,11 +53,11 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           GoRoute(
             path: RouteNames.orders,
-            builder: (context, state) => const _PlaceholderPage(title: 'Orders'),
+            builder: (context, state) => const OrdersScreen(),
           ),
           GoRoute(
             path: RouteNames.purchases,
-            builder: (context, state) => const _PlaceholderPage(title: 'Purchases'),
+            builder: (context, state) => const PurchasesScreen(),
           ),
           GoRoute(
             path: RouteNames.crops,

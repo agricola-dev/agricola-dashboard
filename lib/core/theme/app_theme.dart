@@ -47,6 +47,29 @@ class ConditionColors {
   // Critical — uses theme error tokens (passed in at call site)
 }
 
+/// Semantic colors for order status badges.
+class OrderStatusColors {
+  OrderStatusColors._();
+
+  // Pending — amber
+  static const pendingBackground = Color(0xFFFFF8E1);
+  static const pendingForeground = Color(0xFFF57F17);
+
+  // Confirmed — blue
+  static const confirmedBackground = Color(0xFFE3F2FD);
+  static const confirmedForeground = Color(0xFF1565C0);
+
+  // Shipped — purple
+  static const shippedBackground = Color(0xFFF3E5F5);
+  static const shippedForeground = Color(0xFF6A1B9A);
+
+  // Delivered — green
+  static const deliveredBackground = Color(0xFFE8F5E9);
+  static const deliveredForeground = Color(0xFF2E7D32);
+
+  // Cancelled — uses theme error tokens (passed in at call site)
+}
+
 /// Semantic colors for marketplace listing types.
 class ListingTypeColors {
   ListingTypeColors._();

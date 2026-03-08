@@ -42,7 +42,7 @@ final _navItems = [
     route: RouteNames.orders,
     icon: Icons.receipt_long_outlined,
     labelKey: 'orders',
-    roles: {UserType.merchant},
+    roles: {UserType.merchant, UserType.farmer},
   ),
   const _NavItem(
     route: RouteNames.purchases,

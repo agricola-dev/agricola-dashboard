@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.7.0 — 2026-03-08
+
+### Phase 5 & 6: Orders and Purchases
+- Orders table (seller view) with sortable DataTable, search, and status filter dropdown
+- Order detail dialog showing items table, buyer info, total amount, and timestamps
+- Status progression with quick-action buttons: pending → confirmed → shipped → delivered (or cancelled)
+- OrderStatusBadge widget with semantic OrderStatusColors in app_theme.dart
+- OrdersController (AsyncNotifier) with updateStatus and cancelOrder operations
+- Purchases table with full CRUD: add, edit, delete purchase records
+- Purchase form dialog: seller name, crop type, quantity, unit, price per unit, date, notes
+- PurchasesController (AsyncNotifier) with create, update, delete operations
+- Search filtering and sortable columns on both orders and purchases tables
+- Sidebar updated: orders visible to both merchants and farmers, purchases merchant-only
+- Routes wired replacing placeholders for /orders and /purchases
+- Added intl as direct dependency
+
 ## 0.6.0 — 2026-03-08
 
 ### Phase 4: Marketplace Listings (Merchant)
