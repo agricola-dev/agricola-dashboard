@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.11.0 — 2026-03-09
+
+### Phase 8.6: Loss Calculator (Farmer)
+- Loss calculator screen with sortable DataTable (crop type, loss %, monetary loss, date) and search filtering
+- LossCalcController (AsyncNotifier) wrapping core's LossCalculatorApiService for CRUD operations
+- Form dialog with dynamic loss stages: add/remove stage rows, per-stage cause dropdown populated from core helpers
+- Detail dialog with summary stats, per-stage progress bars, highest-loss highlighting, regional average comparison, and prevention tips
+- LossSeverityBadge widget mapping loss percentage to severity levels (low/moderate/high/critical) using BadgeColors
+- Farmer-only sidebar nav item and route wired into GoRouter
+- Added bilingual translation keys to agricola_core for loss calculator UI
+
 ## 0.10.0 — 2026-03-09
 
 ### User Profile & Language Persistence

@@ -4,6 +4,7 @@ import 'package:agricola_dashboard/features/crops/presentation/crops_screen.dart
 import 'package:agricola_dashboard/features/dashboard/presentation/dashboard_screen.dart';
 import 'package:agricola_dashboard/features/harvests/presentation/harvests_screen.dart';
 import 'package:agricola_dashboard/features/inventory/presentation/inventory_screen.dart';
+import 'package:agricola_dashboard/features/loss_calculator/presentation/loss_calculator_screen.dart';
 import 'package:agricola_dashboard/features/marketplace/presentation/marketplace_screen.dart';
 import 'package:agricola_dashboard/features/orders/presentation/orders_screen.dart';
 import 'package:agricola_dashboard/features/profile/presentation/profile_screen.dart';
@@ -70,6 +71,10 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (context, state) => HarvestsScreen(
               initialCropId: state.uri.queryParameters['cropId'],
             ),
+          ),
+          GoRoute(
+            path: RouteNames.lossCalculator,
+            builder: (context, state) => const LossCalculatorScreen(),
           ),
           GoRoute(
             path: RouteNames.profile,
