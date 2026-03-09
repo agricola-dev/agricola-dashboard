@@ -109,6 +109,92 @@ class PurchasesController extends AsyncNotifier<List<PurchaseModel>> {
 // Derived filtered + sorted provider
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// Summary stats
+// ---------------------------------------------------------------------------
+
+/// Computed summary statistics for the purchases list.
+class PurchaseSummaryStats {
+  const PurchaseSummaryStats({
+    required this.totalSpend,
+    required this.averagePurchase,
+    required this.totalCount,
+    required this.topSupplierName,
+    required this.topSupplierCount,
+    required this.topSupplierTotal,
+    required this.purchasesPerMonth,
+    required this.uniqueSupplierCount,
+  });
+
+  final double totalSpend;
+  final double averagePurchase;
+  final int totalCount;
+  final String topSupplierName;
+  final int topSupplierCount;
+  final double topSupplierTotal;
+  final double purchasesPerMonth;
+  final int uniqueSupplierCount;
+}
+
+/// Derives summary stats from the full (unfiltered) purchases list.
+final purchaseSummaryStatsProvider =
+    Provider<AsyncValue<PurchaseSummaryStats>>((ref) {
+  final asyncItems = ref.watch(purchasesControllerProvider);
+
+  return asyncItems.whenData((items) {
+    if (items.isEmpty) {
+      return const PurchaseSummaryStats(
+        totalSpend: 0,
+        averagePurchase: 0,
+        totalCount: 0,
+        topSupplierName: '-',
+        topSupplierCount: 0,
+        topSupplierTotal: 0,
+        purchasesPerMonth: 0,
+        uniqueSupplierCount: 0,
+      );
+    }
+
+    final totalSpend = items.fold(0.0, (sum, p) => sum + p.totalAmount);
+    final averagePurchase = totalSpend / items.length;
+
+    // Top supplier by total spend
+    final supplierTotals = <String, double>{};
+    final supplierCounts = <String, int>{};
+    for (final p in items) {
+      supplierTotals[p.sellerName] =
+          (supplierTotals[p.sellerName] ?? 0) + p.totalAmount;
+      supplierCounts[p.sellerName] =
+          (supplierCounts[p.sellerName] ?? 0) + 1;
+    }
+
+    final topSupplier = supplierTotals.entries
+        .reduce((a, b) => a.value >= b.value ? a : b);
+
+    // Purchase frequency (per month)
+    final dates = items.map((p) => p.purchaseDate).toList()..sort();
+    final spanDays = dates.last.difference(dates.first).inDays;
+    final spanMonths = spanDays / 30.44; // average days per month
+    final purchasesPerMonth =
+        spanMonths >= 1 ? items.length / spanMonths : items.length.toDouble();
+
+    return PurchaseSummaryStats(
+      totalSpend: totalSpend,
+      averagePurchase: averagePurchase,
+      totalCount: items.length,
+      topSupplierName: topSupplier.key,
+      topSupplierCount: supplierCounts[topSupplier.key]!,
+      topSupplierTotal: topSupplier.value,
+      purchasesPerMonth: purchasesPerMonth,
+      uniqueSupplierCount: supplierTotals.length,
+    );
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Derived filtered + sorted provider
+// ---------------------------------------------------------------------------
+
 /// Derived provider that filters by search text and sorts purchases.
 final filteredPurchasesProvider =
     Provider<AsyncValue<List<PurchaseModel>>>((ref) {

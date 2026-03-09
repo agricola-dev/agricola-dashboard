@@ -1,7 +1,7 @@
 name: agricola_dashboard
 description: Agricola Web Dashboard — merchant & farmer management portal.
 publish_to: 'none'
-version: 0.7.0+8
+version: 0.8.0+9
 
 environment:
   sdk: ^3.9.0

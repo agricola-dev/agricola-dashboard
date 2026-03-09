@@ -1,6 +1,7 @@
 import 'package:agricola_core/agricola_core.dart';
 import 'package:agricola_dashboard/core/providers/language_provider.dart';
 import 'package:agricola_dashboard/core/widgets/app_text_field.dart';
+import 'package:agricola_dashboard/core/widgets/stat_card.dart';
 import 'package:agricola_dashboard/features/auth/providers/auth_providers.dart';
 import 'package:agricola_dashboard/features/purchases/presentation/purchase_form_dialog.dart';
 import 'package:agricola_dashboard/features/purchases/providers/purchases_providers.dart';
@@ -55,6 +56,8 @@ class _PurchasesContent extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildHeader(context, ref, textTheme, colors),
+          const SizedBox(height: 24),
+          _buildStatsGrid(context, ref),
           const SizedBox(height: 24),
           if (purchases.isEmpty)
             _EmptyState(lang: lang, onAdd: () => _addPurchase(context, ref))
@@ -118,6 +121,75 @@ class _PurchasesContent extends ConsumerWidget {
         ),
       ],
     );
+  }
+
+  Widget _buildStatsGrid(BuildContext context, WidgetRef ref) {
+    final statsAsync = ref.watch(purchaseSummaryStatsProvider);
+
+    return statsAsync.when(
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
+      data: (stats) {
+        if (stats.totalCount == 0) return const SizedBox.shrink();
+
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            final crossAxisCount = constraints.maxWidth > 800
+                ? 4
+                : constraints.maxWidth > 500
+                    ? 2
+                    : 1;
+
+            return GridView.count(
+              crossAxisCount: crossAxisCount,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              mainAxisSpacing: 16,
+              crossAxisSpacing: 16,
+              childAspectRatio: 1.8,
+              children: [
+                StatCard(
+                  icon: Icons.payments_outlined,
+                  label: t('total_spend', lang),
+                  value: _formatCurrency(stats.totalSpend),
+                  subtitle:
+                      '${stats.totalCount} ${t('purchases_count', lang)}',
+                ),
+                StatCard(
+                  icon: Icons.analytics_outlined,
+                  label: t('average_purchase', lang),
+                  value: _formatCurrency(stats.averagePurchase),
+                ),
+                StatCard(
+                  icon: Icons.store_outlined,
+                  label: t('top_supplier', lang),
+                  value: stats.topSupplierName,
+                  subtitle:
+                      '${stats.topSupplierCount} ${t('purchases_count', lang)}, ${_formatCurrency(stats.topSupplierTotal)}',
+                ),
+                StatCard(
+                  icon: Icons.calendar_month_outlined,
+                  label: t('purchase_frequency', lang),
+                  value:
+                      '${stats.purchasesPerMonth.toStringAsFixed(1)}${t('per_month', lang)}',
+                  subtitle:
+                      '${stats.uniqueSupplierCount} ${t('unique_suppliers', lang).toLowerCase()}',
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  String _formatCurrency(double amount) {
+    if (amount >= 1000000) {
+      return 'P${(amount / 1000000).toStringAsFixed(1)}M';
+    } else if (amount >= 1000) {
+      return 'P${(amount / 1000).toStringAsFixed(1)}K';
+    }
+    return 'P${amount.toStringAsFixed(2)}';
   }
 
   Widget _buildTable(BuildContext context, WidgetRef ref, ColorScheme colors) {

@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.8.0 — 2026-03-09
+
+### Phase 6.5: Purchase Summary Stats
+- Purchase summary stats grid with 4 StatCard widgets: total spend, average purchase, top supplier, purchase frequency
+- PurchaseSummaryStats data class and derived purchaseSummaryStatsProvider (client-side aggregation)
+- Responsive grid layout (4/2/1 columns based on viewport width)
+- Hidden when no purchases exist
+- Added 6 bilingual translation keys to agricola_core (total_spend, average_purchase, top_supplier, purchase_frequency, per_month, purchases_count)
+
 ## 0.7.0 — 2026-03-08
 
 ### Phase 5 & 6: Orders and Purchases
