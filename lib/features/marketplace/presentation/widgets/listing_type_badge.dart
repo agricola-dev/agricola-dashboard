@@ -17,12 +17,12 @@ class ListingTypeBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final (backgroundColor, foregroundColor) = switch (type) {
       ListingType.produce => (
-          ListingTypeColors.produceBackground,
-          ListingTypeColors.produceForeground,
+          BadgeColors.successBackground,
+          BadgeColors.successForeground,
         ),
       ListingType.supplies => (
-          ListingTypeColors.suppliesBackground,
-          ListingTypeColors.suppliesForeground,
+          BadgeColors.positiveBackground,
+          BadgeColors.positiveForeground,
         ),
     };
 

@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.9.0 — 2026-03-09
+
+### Phase 7: Crops & Harvests Management (Farmer)
+- Crops screen with full CRUD, sortable DataTable, catalog-aware crop type dropdown, and stage badge with progress bar
+- Crop form dialog with auto-calculated expected harvest date from crop catalog harvestDays
+- CropStageBadge widget for Vegetative/Flowering/Harvest Ready growth stages
+- CropController (AsyncNotifier) with search, sort, and filtered providers
+- Harvests screen with crop selector dropdown (supports ?cropId= query param navigation from crops)
+- Crop summary info card showing type, field, planting date, and estimated yield
+- Harvest form dialog (add-only, no edit — API limitation) with quality, loss tracking, and storage
+- QualityBadge widget for harvest quality assessment levels
+- HarvestController (AsyncNotifier) with selectedCropIdProvider for crop-scoped fetching
+- Routes wired replacing placeholders for /crops and /harvests
+- Consolidated all badge colors: replaced ConditionColors, OrderStatusColors, ListingTypeColors with single BadgeColors class (5 semantic pairs)
+- Added 25 bilingual translation keys to agricola_core for crops and harvests UI
+
 ## 0.8.0 — 2026-03-09
 
 ### Phase 6.5: Purchase Summary Stats

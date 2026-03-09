@@ -39,20 +39,20 @@ class OrderStatusBadge extends StatelessWidget {
 
     return switch (status) {
       'pending' => (
-          OrderStatusColors.pendingBackground,
-          OrderStatusColors.pendingForeground,
+          BadgeColors.warningBackground,
+          BadgeColors.warningForeground,
         ),
       'confirmed' => (
-          OrderStatusColors.confirmedBackground,
-          OrderStatusColors.confirmedForeground,
+          BadgeColors.positiveBackground,
+          BadgeColors.positiveForeground,
         ),
       'shipped' => (
-          OrderStatusColors.shippedBackground,
-          OrderStatusColors.shippedForeground,
+          BadgeColors.infoBackground,
+          BadgeColors.infoForeground,
         ),
       'delivered' => (
-          OrderStatusColors.deliveredBackground,
-          OrderStatusColors.deliveredForeground,
+          BadgeColors.successBackground,
+          BadgeColors.successForeground,
         ),
       'cancelled' => (
           colors.errorContainer,

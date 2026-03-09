@@ -1,6 +1,8 @@
 import 'package:agricola_dashboard/features/auth/presentation/login_screen.dart';
 import 'package:agricola_dashboard/features/auth/providers/auth_providers.dart';
+import 'package:agricola_dashboard/features/crops/presentation/crops_screen.dart';
 import 'package:agricola_dashboard/features/dashboard/presentation/dashboard_screen.dart';
+import 'package:agricola_dashboard/features/harvests/presentation/harvests_screen.dart';
 import 'package:agricola_dashboard/features/inventory/presentation/inventory_screen.dart';
 import 'package:agricola_dashboard/features/marketplace/presentation/marketplace_screen.dart';
 import 'package:agricola_dashboard/features/orders/presentation/orders_screen.dart';
@@ -61,11 +63,13 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           GoRoute(
             path: RouteNames.crops,
-            builder: (context, state) => const _PlaceholderPage(title: 'Crops'),
+            builder: (context, state) => const CropsScreen(),
           ),
           GoRoute(
             path: RouteNames.harvests,
-            builder: (context, state) => const _PlaceholderPage(title: 'Harvests'),
+            builder: (context, state) => HarvestsScreen(
+              initialCropId: state.uri.queryParameters['cropId'],
+            ),
           ),
           GoRoute(
             path: RouteNames.profile,

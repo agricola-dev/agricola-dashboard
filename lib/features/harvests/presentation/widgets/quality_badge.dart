@@ -2,24 +2,24 @@ import 'package:agricola_core/agricola_core.dart';
 import 'package:agricola_dashboard/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
-/// Color-coded chip displaying inventory condition status.
-class ConditionBadge extends StatelessWidget {
-  const ConditionBadge({
+/// Color-coded chip displaying harvest quality level.
+class QualityBadge extends StatelessWidget {
+  const QualityBadge({
     super.key,
-    required this.condition,
+    required this.quality,
     required this.lang,
   });
 
-  final String condition;
+  final String quality;
   final AppLanguage lang;
 
   @override
   Widget build(BuildContext context) {
-    final (backgroundColor, foregroundColor) = _conditionColors(context);
+    final (backgroundColor, foregroundColor) = _qualityColors(context);
 
     return Chip(
       label: Text(
-        t(condition, lang),
+        t(quality, lang),
         style: TextStyle(
           color: foregroundColor,
           fontSize: 12,
@@ -34,10 +34,8 @@ class ConditionBadge extends StatelessWidget {
     );
   }
 
-  (Color, Color) _conditionColors(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-
-    return switch (condition) {
+  (Color, Color) _qualityColors(BuildContext context) {
+    return switch (quality) {
       'excellent' => (
           BadgeColors.successBackground,
           BadgeColors.successForeground,
@@ -54,15 +52,10 @@ class ConditionBadge extends StatelessWidget {
           BadgeColors.cautionBackground,
           BadgeColors.cautionForeground,
         ),
-      'needs_attention' => (
-          BadgeColors.cautionBackground,
-          BadgeColors.cautionForeground,
+      _ => (
+          Theme.of(context).colorScheme.surfaceContainerHighest,
+          Theme.of(context).colorScheme.onSurfaceVariant,
         ),
-      'critical' => (
-          colors.errorContainer,
-          colors.onErrorContainer,
-        ),
-      _ => (colors.surfaceContainerHighest, colors.onSurfaceVariant),
     };
   }
 }

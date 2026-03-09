@@ -16,69 +16,31 @@ class AppTheme {
   );
 }
 
-/// Centralized semantic colors for inventory condition levels.
+/// The app's fixed badge color palette.
 ///
-/// Each condition has a background and foreground pair for consistent
-/// badge/chip rendering. Defined here so all condition-related UI
-/// draws from one source.
-class ConditionColors {
-  ConditionColors._();
+/// Every badge/chip in the app draws from these five semantic pairs.
+/// Do NOT add new color constants — map new statuses to an existing pair.
+/// For error/critical states, use `colorScheme.errorContainer` from theme.
+class BadgeColors {
+  BadgeColors._();
 
-  // Excellent — green
-  static const excellentBackground = Color(0xFFE8F5E9);
-  static const excellentForeground = Color(0xFF2E7D32);
+  // Success — green (e.g. excellent, delivered, produce, vegetative)
+  static const successBackground = Color(0xFFE8F5E9);
+  static const successForeground = Color(0xFF2E7D32);
 
-  // Good — teal
-  static const goodBackground = Color(0xFFE0F2F1);
-  static const goodForeground = Color(0xFF00695C);
+  // Positive — teal (e.g. good, confirmed)
+  static const positiveBackground = Color(0xFFE0F2F1);
+  static const positiveForeground = Color(0xFF00695C);
 
-  // Fair — amber
-  static const fairBackground = Color(0xFFFFF8E1);
-  static const fairForeground = Color(0xFFE65100);
+  // Warning — amber (e.g. fair, pending, harvest ready)
+  static const warningBackground = Color(0xFFFFF8E1);
+  static const warningForeground = Color(0xFFE65100);
 
-  // Poor — orange
-  static const poorBackground = Color(0xFFFFF3E0);
-  static const poorForeground = Color(0xFFBF360C);
+  // Caution — orange (e.g. poor, needs attention)
+  static const cautionBackground = Color(0xFFFFF3E0);
+  static const cautionForeground = Color(0xFFBF360C);
 
-  // Needs attention — deep orange
-  static const needsAttentionBackground = Color(0xFFFBE9E7);
-  static const needsAttentionForeground = Color(0xFFBF360C);
-
-  // Critical — uses theme error tokens (passed in at call site)
-}
-
-/// Semantic colors for order status badges.
-class OrderStatusColors {
-  OrderStatusColors._();
-
-  // Pending — amber
-  static const pendingBackground = Color(0xFFFFF8E1);
-  static const pendingForeground = Color(0xFFF57F17);
-
-  // Confirmed — blue
-  static const confirmedBackground = Color(0xFFE3F2FD);
-  static const confirmedForeground = Color(0xFF1565C0);
-
-  // Shipped — purple
-  static const shippedBackground = Color(0xFFF3E5F5);
-  static const shippedForeground = Color(0xFF6A1B9A);
-
-  // Delivered — green
-  static const deliveredBackground = Color(0xFFE8F5E9);
-  static const deliveredForeground = Color(0xFF2E7D32);
-
-  // Cancelled — uses theme error tokens (passed in at call site)
-}
-
-/// Semantic colors for marketplace listing types.
-class ListingTypeColors {
-  ListingTypeColors._();
-
-  // Produce — green
-  static const produceBackground = Color(0xFFE8F5E9);
-  static const produceForeground = Color(0xFF2E7D32);
-
-  // Supplies — blue
-  static const suppliesBackground = Color(0xFFE3F2FD);
-  static const suppliesForeground = Color(0xFF1565C0);
+  // Info — purple (e.g. shipped, flowering)
+  static const infoBackground = Color(0xFFF3E5F5);
+  static const infoForeground = Color(0xFF6A1B9A);
 }
