@@ -6,10 +6,10 @@ import 'package:agricola_dashboard/features/harvests/presentation/harvests_scree
 import 'package:agricola_dashboard/features/inventory/presentation/inventory_screen.dart';
 import 'package:agricola_dashboard/features/marketplace/presentation/marketplace_screen.dart';
 import 'package:agricola_dashboard/features/orders/presentation/orders_screen.dart';
+import 'package:agricola_dashboard/features/profile/presentation/profile_screen.dart';
 import 'package:agricola_dashboard/features/purchases/presentation/purchases_screen.dart';
 import 'package:agricola_dashboard/features/shell/presentation/dashboard_shell.dart';
 import 'package:agricola_dashboard/routing/route_names.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -73,26 +73,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           GoRoute(
             path: RouteNames.profile,
-            builder: (context, state) => const _PlaceholderPage(title: 'Profile'),
+            builder: (context, state) => const ProfileScreen(),
           ),
         ],
       ),
     ],
   );
 });
-
-/// Placeholder for pages not yet implemented. Will be replaced in later phases.
-class _PlaceholderPage extends StatelessWidget {
-  const _PlaceholderPage({required this.title});
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        title,
-        style: Theme.of(context).textTheme.headlineMedium,
-      ),
-    );
-  }
-}

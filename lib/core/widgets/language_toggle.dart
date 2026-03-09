@@ -29,7 +29,7 @@ class LanguageToggle extends ConsumerWidget {
       ],
       selected: {lang},
       onSelectionChanged: (selected) {
-        ref.read(languageProvider.notifier).state = selected.first;
+        ref.read(languageProvider.notifier).setLanguage(selected.first);
       },
       style: compact
           ? const ButtonStyle(

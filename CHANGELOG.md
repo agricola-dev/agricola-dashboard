@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.10.0 — 2026-03-09
+
+### User Profile & Language Persistence
+- Profile screen displaying user info (name, email, role) with role-specific profile details
+- ProfileInfoCard reusable widget for displaying labeled profile fields
+- Farmer profile form dialog with village, farm size, and primary crops selection
+- Merchant profile form dialog with business name, merchant type, location, and products offered
+- Profile providers for fetching and updating farmer/merchant profiles via API
+- Language preference now persists to localStorage across sessions (LanguageNotifier + web localStorage)
+- Profile route wired into app router
+
 ## 0.9.0 — 2026-03-09
 
 ### Phase 7: Crops & Harvests Management (Farmer)
