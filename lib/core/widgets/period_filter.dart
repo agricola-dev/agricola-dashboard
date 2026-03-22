@@ -7,8 +7,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 /// Segmented button for selecting the analytics time period.
 ///
 /// Bilingual labels via [t()]. Reads and writes [analyticsPeriodProvider].
+/// Set [showCustom] to true to include a "Custom" fifth segment (reports screen only).
 class PeriodFilter extends ConsumerWidget {
-  const PeriodFilter({super.key});
+  const PeriodFilter({super.key, this.showCustom = false});
+
+  final bool showCustom;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -33,6 +36,11 @@ class PeriodFilter extends ConsumerWidget {
           value: AnalyticsPeriod.all,
           label: Text(t('all_time', lang)),
         ),
+        if (showCustom)
+          ButtonSegment(
+            value: AnalyticsPeriod.custom,
+            label: Text(t('custom_range', lang)),
+          ),
       ],
       selected: {period},
       onSelectionChanged: (selected) {

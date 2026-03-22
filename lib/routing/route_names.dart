@@ -10,5 +10,6 @@ class RouteNames {
   static const crops = '/crops';
   static const harvests = '/harvests';
   static const lossCalculator = '/loss-calculator';
+  static const reports = '/reports';
   static const profile = '/profile';
 }

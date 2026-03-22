@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.12.0 — 2026-03-22
+
+### Phase 9: Reports & Data Export
+- Reports screen with role-based analytics (stats grid, charts) and data table browser
+- Custom date range picker via PeriodFilter "Custom" option — filters data tables client-side
+- CSV export for crops, harvests, inventory, purchases, and orders (bilingual headers, web-native download)
+- PDF export — farm summary (farmer) and business summary (merchant) with stats table
+- Print view via browser print dialog
+- Extracted shared ChartCard widget from dashboard for reuse
+- Added 9 bilingual translation keys to agricola-core (reports, date_range, export_as_csv, etc.)
+- Reports nav item visible to both merchant and farmer roles in sidebar
+
 ## 0.11.0 — 2026-03-09
 
 ### Phase 8.6: Loss Calculator (Farmer)

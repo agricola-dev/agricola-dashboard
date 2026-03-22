@@ -68,6 +68,11 @@ final _navItems = [
     labelKey: 'loss_calculator',
     roles: {UserType.farmer},
   ),
+  const _NavItem(
+    route: RouteNames.reports,
+    icon: Icons.bar_chart_outlined,
+    labelKey: 'reports',
+  ),
 ];
 
 class Sidebar extends ConsumerWidget {

@@ -8,6 +8,7 @@ import 'package:agricola_dashboard/features/loss_calculator/presentation/loss_ca
 import 'package:agricola_dashboard/features/marketplace/presentation/marketplace_screen.dart';
 import 'package:agricola_dashboard/features/orders/presentation/orders_screen.dart';
 import 'package:agricola_dashboard/features/profile/presentation/profile_screen.dart';
+import 'package:agricola_dashboard/features/reports/presentation/reports_screen.dart';
 import 'package:agricola_dashboard/features/purchases/presentation/purchases_screen.dart';
 import 'package:agricola_dashboard/features/shell/presentation/dashboard_shell.dart';
 import 'package:agricola_dashboard/routing/route_names.dart';
@@ -75,6 +76,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: RouteNames.lossCalculator,
             builder: (context, state) => const LossCalculatorScreen(),
+          ),
+          GoRoute(
+            path: RouteNames.reports,
+            builder: (context, state) => const ReportsScreen(),
           ),
           GoRoute(
             path: RouteNames.profile,

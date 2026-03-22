@@ -1,5 +1,6 @@
 import 'package:agricola_core/agricola_core.dart';
 import 'package:agricola_dashboard/core/providers/language_provider.dart';
+import 'package:agricola_dashboard/core/widgets/chart_card.dart';
 import 'package:agricola_dashboard/core/widgets/period_filter.dart';
 import 'package:agricola_dashboard/core/widgets/stat_card.dart';
 import 'package:agricola_dashboard/features/auth/providers/auth_providers.dart';
@@ -233,7 +234,7 @@ class _DashboardContent extends StatelessWidget {
 
   List<Widget> _merchantCharts() {
     return [
-      _ChartCard(
+      ChartCard(
         title: t('revenue_overview', lang),
         child: _RevenueBarChart(
           periodRevenue: analytics.orders.periodRevenue,
@@ -241,7 +242,7 @@ class _DashboardContent extends StatelessWidget {
           lang: lang,
         ),
       ),
-      _ChartCard(
+      ChartCard(
         title: t('inventory_overview', lang),
         child: _InventoryPieChart(
           total: analytics.inventory.total,
@@ -255,7 +256,7 @@ class _DashboardContent extends StatelessWidget {
 
   List<Widget> _farmerCharts() {
     return [
-      _ChartCard(
+      ChartCard(
         title: t('crop_overview', lang),
         child: _CropPieChart(
           active: analytics.crops.active,
@@ -263,7 +264,7 @@ class _DashboardContent extends StatelessWidget {
           lang: lang,
         ),
       ),
-      _ChartCard(
+      ChartCard(
         title: t('yield_vs_loss', lang),
         child: _YieldLossBarChart(
           totalYield: analytics.harvests.totalYield,
@@ -292,48 +293,6 @@ class _DashboardContent extends StatelessWidget {
 
   String _formatArea(double hectares) {
     return '${hectares.toStringAsFixed(1)}ha';
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Chart wrapper card
-// ---------------------------------------------------------------------------
-
-class _ChartCard extends StatelessWidget {
-  const _ChartCard({required this.title, required this.child});
-
-  final String title;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-
-    return Card(
-      elevation: 0,
-      color: colors.surfaceContainerLow,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: colors.outlineVariant.withValues(alpha: 0.5)),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(height: 24),
-            SizedBox(height: 220, child: child),
-          ],
-        ),
-      ),
-    );
   }
 }
 

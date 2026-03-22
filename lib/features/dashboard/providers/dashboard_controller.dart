@@ -7,7 +7,8 @@ enum AnalyticsPeriod {
   week('week'),
   month('month'),
   year('year'),
-  all('all');
+  all('all'),
+  custom('all'); // custom range — falls back to 'all' for API (client-side filter only)
 
   const AnalyticsPeriod(this.value);
   final String value;
