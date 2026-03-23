@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.12.1 — 2026-03-22
+
+### Cross-Cutting: Data Table Pagination
+- Added client-side pagination to all 7 data tables (inventory, marketplace, orders, purchases, crops, harvests, loss calculator)
+- Shared `PaginationState` class and `paginationProvider` family in `core/providers/pagination_provider.dart`
+- Shared `TablePaginationBar` widget with "Showing X–Y of Z", rows-per-page dropdown (10/25/50), prev/next navigation
+- Pagination resets to page 1 on search, sort, or filter changes
+- Added 3 bilingual translation keys to agricola-core (`rows_per_page`, `showing_x_of_y`, `previous`)
+
 ## 0.12.0 — 2026-03-22
 
 ### Phase 9: Reports & Data Export

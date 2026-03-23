@@ -1,6 +1,8 @@
 import 'package:agricola_core/agricola_core.dart';
 import 'package:agricola_dashboard/core/providers/language_provider.dart';
+import 'package:agricola_dashboard/core/providers/pagination_provider.dart';
 import 'package:agricola_dashboard/core/widgets/app_text_field.dart';
+import 'package:agricola_dashboard/core/widgets/table_pagination_bar.dart';
 import 'package:agricola_dashboard/features/crops/presentation/crop_form_dialog.dart';
 import 'package:agricola_dashboard/features/crops/presentation/widgets/crop_stage_badge.dart';
 import 'package:agricola_dashboard/features/crops/providers/crop_providers.dart';
@@ -50,6 +52,18 @@ class _CropsContent extends ConsumerWidget {
     final textTheme = Theme.of(context).textTheme;
     final colors = Theme.of(context).colorScheme;
 
+    final pagination = ref.watch(paginationProvider('crops'));
+    final pageItems = paginateList(items, pagination);
+
+    ref.listen(cropSearchProvider, (_, __) {
+      ref.read(paginationProvider('crops').notifier).state =
+          ref.read(paginationProvider('crops')).copyWith(currentPage: 0);
+    });
+    ref.listen(cropSortProvider, (_, __) {
+      ref.read(paginationProvider('crops').notifier).state =
+          ref.read(paginationProvider('crops')).copyWith(currentPage: 0);
+    });
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -59,8 +73,21 @@ class _CropsContent extends ConsumerWidget {
           const SizedBox(height: 24),
           if (items.isEmpty)
             _EmptyState(lang: lang, onAdd: () => _addCrop(context, ref))
-          else
-            _buildTable(context, ref, colors),
+          else ...[
+            _buildTable(context, ref, colors, pageItems),
+            const SizedBox(height: 16),
+            TablePaginationBar(
+              totalItems: items.length,
+              pagination: pagination,
+              onPageChanged: (page) =>
+                  ref.read(paginationProvider('crops').notifier).state =
+                      pagination.copyWith(currentPage: page),
+              onRowsPerPageChanged: (rows) =>
+                  ref.read(paginationProvider('crops').notifier).state =
+                      const PaginationState().copyWith(rowsPerPage: rows),
+              lang: lang,
+            ),
+          ],
         ],
       ),
     );
@@ -119,7 +146,7 @@ class _CropsContent extends ConsumerWidget {
     );
   }
 
-  Widget _buildTable(BuildContext context, WidgetRef ref, ColorScheme colors) {
+  Widget _buildTable(BuildContext context, WidgetRef ref, ColorScheme colors, List<CropModel> pageItems) {
     final catalogAsync = ref.watch(cropCatalogProvider);
     final catalog = catalogAsync.valueOrNull ?? [];
 
@@ -156,7 +183,7 @@ class _CropsContent extends ConsumerWidget {
           DataColumn(label: Text(t('current_stage', lang))),
           DataColumn(label: Text(t('actions', lang))),
         ],
-        rows: items
+        rows: pageItems
             .map((item) => _buildRow(context, ref, item, colors, catalog))
             .toList(),
       ),

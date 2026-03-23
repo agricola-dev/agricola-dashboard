@@ -1,6 +1,8 @@
 import 'package:agricola_core/agricola_core.dart';
 import 'package:agricola_dashboard/core/providers/language_provider.dart';
+import 'package:agricola_dashboard/core/providers/pagination_provider.dart';
 import 'package:agricola_dashboard/core/widgets/app_text_field.dart';
+import 'package:agricola_dashboard/core/widgets/table_pagination_bar.dart';
 import 'package:agricola_dashboard/features/loss_calculator/presentation/loss_calculator_form_dialog.dart';
 import 'package:agricola_dashboard/features/loss_calculator/presentation/loss_detail_dialog.dart';
 import 'package:agricola_dashboard/features/loss_calculator/presentation/widgets/loss_severity_badge.dart';
@@ -49,6 +51,18 @@ class _LossCalcContent extends ConsumerWidget {
     final textTheme = Theme.of(context).textTheme;
     final colors = Theme.of(context).colorScheme;
 
+    final pagination = ref.watch(paginationProvider('loss_calculator'));
+    final pageItems = paginateList(items, pagination);
+
+    ref.listen(lossCalcSearchProvider, (_, __) {
+      ref.read(paginationProvider('loss_calculator').notifier).state =
+          ref.read(paginationProvider('loss_calculator')).copyWith(currentPage: 0);
+    });
+    ref.listen(lossCalcSortProvider, (_, __) {
+      ref.read(paginationProvider('loss_calculator').notifier).state =
+          ref.read(paginationProvider('loss_calculator')).copyWith(currentPage: 0);
+    });
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -58,8 +72,21 @@ class _LossCalcContent extends ConsumerWidget {
           const SizedBox(height: 24),
           if (items.isEmpty)
             _EmptyState(lang: lang, onAdd: () => _addCalculation(context, ref))
-          else
-            _buildTable(context, ref, colors),
+          else ...[
+            _buildTable(context, ref, colors, pageItems),
+            const SizedBox(height: 16),
+            TablePaginationBar(
+              totalItems: items.length,
+              pagination: pagination,
+              onPageChanged: (page) =>
+                  ref.read(paginationProvider('loss_calculator').notifier).state =
+                      pagination.copyWith(currentPage: page),
+              onRowsPerPageChanged: (rows) =>
+                  ref.read(paginationProvider('loss_calculator').notifier).state =
+                      const PaginationState().copyWith(rowsPerPage: rows),
+              lang: lang,
+            ),
+          ],
         ],
       ),
     );
@@ -118,7 +145,7 @@ class _LossCalcContent extends ConsumerWidget {
     );
   }
 
-  Widget _buildTable(BuildContext context, WidgetRef ref, ColorScheme colors) {
+  Widget _buildTable(BuildContext context, WidgetRef ref, ColorScheme colors, List<LossCalculation> pageItems) {
     return SizedBox(
       width: double.infinity,
       child: DataTable(
@@ -155,7 +182,7 @@ class _LossCalcContent extends ConsumerWidget {
           ),
           DataColumn(label: Text(t('actions', lang))),
         ],
-        rows: items.map((item) => _buildRow(context, ref, item, colors)).toList(),
+        rows: pageItems.map((item) => _buildRow(context, ref, item, colors)).toList(),
       ),
     );
   }

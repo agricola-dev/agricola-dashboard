@@ -1,6 +1,8 @@
 import 'package:agricola_core/agricola_core.dart';
 import 'package:agricola_dashboard/core/providers/language_provider.dart';
+import 'package:agricola_dashboard/core/providers/pagination_provider.dart';
 import 'package:agricola_dashboard/core/widgets/app_text_field.dart';
+import 'package:agricola_dashboard/core/widgets/table_pagination_bar.dart';
 import 'package:agricola_dashboard/features/auth/providers/auth_providers.dart';
 import 'package:agricola_dashboard/features/marketplace/presentation/marketplace_form_dialog.dart';
 import 'package:agricola_dashboard/features/marketplace/presentation/widgets/listing_type_badge.dart';
@@ -124,6 +126,18 @@ class _MyListingsContent extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final pagination = ref.watch(paginationProvider('my_listings'));
+    final pageItems = paginateList(items, pagination);
+
+    ref.listen(myListingsSearchProvider, (_, __) {
+      ref.read(paginationProvider('my_listings').notifier).state =
+          ref.read(paginationProvider('my_listings')).copyWith(currentPage: 0);
+    });
+    ref.listen(myListingsSortProvider, (_, __) {
+      ref.read(paginationProvider('my_listings').notifier).state =
+          ref.read(paginationProvider('my_listings')).copyWith(currentPage: 0);
+    });
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -133,8 +147,21 @@ class _MyListingsContent extends ConsumerWidget {
           const SizedBox(height: 24),
           if (items.isEmpty)
             _EmptyState(lang: lang, onAdd: () => _addListing(context, ref))
-          else
-            _buildTable(context, ref),
+          else ...[
+            _buildTable(context, ref, pageItems),
+            const SizedBox(height: 16),
+            TablePaginationBar(
+              totalItems: items.length,
+              pagination: pagination,
+              onPageChanged: (page) =>
+                  ref.read(paginationProvider('my_listings').notifier).state =
+                      pagination.copyWith(currentPage: page),
+              onRowsPerPageChanged: (rows) =>
+                  ref.read(paginationProvider('my_listings').notifier).state =
+                      const PaginationState().copyWith(rowsPerPage: rows),
+              lang: lang,
+            ),
+          ],
         ],
       ),
     );
@@ -182,7 +209,7 @@ class _MyListingsContent extends ConsumerWidget {
     );
   }
 
-  Widget _buildTable(BuildContext context, WidgetRef ref) {
+  Widget _buildTable(BuildContext context, WidgetRef ref, List<MarketplaceListing> pageItems) {
     final colors = Theme.of(context).colorScheme;
 
     return SizedBox(
@@ -216,7 +243,7 @@ class _MyListingsContent extends ConsumerWidget {
           ),
           DataColumn(label: Text(t('actions', lang))),
         ],
-        rows: items
+        rows: pageItems
             .map((item) => _buildRow(context, ref, item, colors))
             .toList(),
       ),

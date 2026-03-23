@@ -2,6 +2,8 @@ import 'package:agricola_core/agricola_core.dart';
 import 'package:agricola_dashboard/core/providers/language_provider.dart';
 import 'package:agricola_dashboard/core/widgets/app_text_field.dart';
 import 'package:agricola_dashboard/features/auth/providers/auth_providers.dart';
+import 'package:agricola_dashboard/core/providers/pagination_provider.dart';
+import 'package:agricola_dashboard/core/widgets/table_pagination_bar.dart';
 import 'package:agricola_dashboard/features/inventory/presentation/inventory_form_dialog.dart';
 import 'package:agricola_dashboard/features/inventory/presentation/widgets/condition_badge.dart';
 import 'package:agricola_dashboard/features/inventory/providers/inventory_providers.dart';
@@ -50,6 +52,18 @@ class _InventoryContent extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final textTheme = Theme.of(context).textTheme;
     final colors = Theme.of(context).colorScheme;
+    final pagination = ref.watch(paginationProvider('inventory'));
+    final pageItems = paginateList(items, pagination);
+
+    // Reset to page 0 when search or sort changes.
+    ref.listen(inventorySearchProvider, (_, __) {
+      ref.read(paginationProvider('inventory').notifier).state =
+          ref.read(paginationProvider('inventory')).copyWith(currentPage: 0);
+    });
+    ref.listen(inventorySortProvider, (_, __) {
+      ref.read(paginationProvider('inventory').notifier).state =
+          ref.read(paginationProvider('inventory')).copyWith(currentPage: 0);
+    });
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
@@ -62,8 +76,21 @@ class _InventoryContent extends ConsumerWidget {
           // Table or empty state
           if (items.isEmpty)
             _EmptyState(lang: lang, onAdd: () => _addItem(context, ref))
-          else
-            _buildTable(context, ref, colors),
+          else ...[
+            _buildTable(context, ref, colors, pageItems),
+            const SizedBox(height: 16),
+            TablePaginationBar(
+              totalItems: items.length,
+              pagination: pagination,
+              onPageChanged: (page) =>
+                  ref.read(paginationProvider('inventory').notifier).state =
+                      pagination.copyWith(currentPage: page),
+              onRowsPerPageChanged: (rows) =>
+                  ref.read(paginationProvider('inventory').notifier).state =
+                      const PaginationState().copyWith(rowsPerPage: rows),
+              lang: lang,
+            ),
+          ],
         ],
       ),
     );
@@ -124,7 +151,7 @@ class _InventoryContent extends ConsumerWidget {
     );
   }
 
-  Widget _buildTable(BuildContext context, WidgetRef ref, ColorScheme colors) {
+  Widget _buildTable(BuildContext context, WidgetRef ref, ColorScheme colors, List<InventoryModel> pageItems) {
     return SizedBox(
       width: double.infinity,
       child: DataTable(
@@ -154,7 +181,7 @@ class _InventoryContent extends ConsumerWidget {
           ),
           DataColumn(label: Text(t('actions', lang))),
         ],
-        rows: items.map((item) => _buildRow(context, ref, item, colors)).toList(),
+        rows: pageItems.map((item) => _buildRow(context, ref, item, colors)).toList(),
       ),
     );
   }

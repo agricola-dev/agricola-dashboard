@@ -1,5 +1,7 @@
 import 'package:agricola_core/agricola_core.dart';
 import 'package:agricola_dashboard/core/providers/language_provider.dart';
+import 'package:agricola_dashboard/core/providers/pagination_provider.dart';
+import 'package:agricola_dashboard/core/widgets/table_pagination_bar.dart';
 import 'package:agricola_dashboard/features/crops/providers/crop_providers.dart';
 import 'package:agricola_dashboard/features/harvests/presentation/harvest_form_dialog.dart';
 import 'package:agricola_dashboard/features/harvests/presentation/widgets/quality_badge.dart';
@@ -61,7 +63,7 @@ class _HarvestsScreenState extends ConsumerState<HarvestsScreen> {
                       lang: lang,
                       onAdd: () => _recordHarvest(context, selectedCropId),
                     )
-                  : _buildTable(context, harvests, lang, selectedCropId),
+                  : _buildPaginatedTable(context, harvests, lang, selectedCropId),
             ),
         ],
       ),
@@ -202,36 +204,60 @@ class _HarvestsScreenState extends ConsumerState<HarvestsScreen> {
     );
   }
 
-  Widget _buildTable(
+  Widget _buildPaginatedTable(
     BuildContext context,
     List<HarvestModel> harvests,
     AppLanguage lang,
     String cropId,
   ) {
+    final pagination = ref.watch(paginationProvider('harvests'));
+    final pageItems = paginateList(harvests, pagination);
+
+    ref.listen(selectedCropIdProvider, (_, __) {
+      ref.read(paginationProvider('harvests').notifier).state =
+          ref.read(paginationProvider('harvests')).copyWith(currentPage: 0);
+    });
+
     final colors = Theme.of(context).colorScheme;
 
-    return SizedBox(
-      width: double.infinity,
-      child: DataTable(
-        headingRowColor: WidgetStateProperty.all(
-          colors.surfaceContainerLow,
-        ),
-        columns: [
-          DataColumn(label: Text(t('harvest_date', lang))),
-          DataColumn(
-            label: Text(t('actual_yield', lang)),
-            numeric: true,
+    return Column(
+      children: [
+        SizedBox(
+          width: double.infinity,
+          child: DataTable(
+            headingRowColor: WidgetStateProperty.all(
+              colors.surfaceContainerLow,
+            ),
+            columns: [
+              DataColumn(label: Text(t('harvest_date', lang))),
+              DataColumn(
+                label: Text(t('actual_yield', lang)),
+                numeric: true,
+              ),
+              DataColumn(label: Text(t('quality_assessment', lang))),
+              DataColumn(label: Text(t('storage_location', lang))),
+              DataColumn(label: Text(t('loss_amount', lang)), numeric: true),
+              DataColumn(label: Text(t('loss_reason', lang))),
+              DataColumn(label: Text(t('actions', lang))),
+            ],
+            rows: pageItems
+                .map((h) => _buildRow(context, h, lang, colors))
+                .toList(),
           ),
-          DataColumn(label: Text(t('quality_assessment', lang))),
-          DataColumn(label: Text(t('storage_location', lang))),
-          DataColumn(label: Text(t('loss_amount', lang)), numeric: true),
-          DataColumn(label: Text(t('loss_reason', lang))),
-          DataColumn(label: Text(t('actions', lang))),
-        ],
-        rows: harvests
-            .map((h) => _buildRow(context, h, lang, colors))
-            .toList(),
-      ),
+        ),
+        const SizedBox(height: 16),
+        TablePaginationBar(
+          totalItems: harvests.length,
+          pagination: pagination,
+          onPageChanged: (page) =>
+              ref.read(paginationProvider('harvests').notifier).state =
+                  pagination.copyWith(currentPage: page),
+          onRowsPerPageChanged: (rows) =>
+              ref.read(paginationProvider('harvests').notifier).state =
+                  const PaginationState().copyWith(rowsPerPage: rows),
+          lang: lang,
+        ),
+      ],
     );
   }
 

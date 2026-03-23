@@ -1,7 +1,9 @@
 import 'package:agricola_core/agricola_core.dart';
 import 'package:agricola_dashboard/core/providers/language_provider.dart';
+import 'package:agricola_dashboard/core/providers/pagination_provider.dart';
 import 'package:agricola_dashboard/core/widgets/app_text_field.dart';
 import 'package:agricola_dashboard/core/widgets/stat_card.dart';
+import 'package:agricola_dashboard/core/widgets/table_pagination_bar.dart';
 import 'package:agricola_dashboard/features/auth/providers/auth_providers.dart';
 import 'package:agricola_dashboard/features/purchases/presentation/purchase_form_dialog.dart';
 import 'package:agricola_dashboard/features/purchases/providers/purchases_providers.dart';
@@ -50,6 +52,18 @@ class _PurchasesContent extends ConsumerWidget {
     final textTheme = Theme.of(context).textTheme;
     final colors = Theme.of(context).colorScheme;
 
+    final pagination = ref.watch(paginationProvider('purchases'));
+    final pageItems = paginateList(purchases, pagination);
+
+    ref.listen(purchasesSearchProvider, (_, __) {
+      ref.read(paginationProvider('purchases').notifier).state =
+          ref.read(paginationProvider('purchases')).copyWith(currentPage: 0);
+    });
+    ref.listen(purchasesSortProvider, (_, __) {
+      ref.read(paginationProvider('purchases').notifier).state =
+          ref.read(paginationProvider('purchases')).copyWith(currentPage: 0);
+    });
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -61,8 +75,21 @@ class _PurchasesContent extends ConsumerWidget {
           const SizedBox(height: 24),
           if (purchases.isEmpty)
             _EmptyState(lang: lang, onAdd: () => _addPurchase(context, ref))
-          else
-            _buildTable(context, ref, colors),
+          else ...[
+            _buildTable(context, ref, colors, pageItems),
+            const SizedBox(height: 16),
+            TablePaginationBar(
+              totalItems: purchases.length,
+              pagination: pagination,
+              onPageChanged: (page) =>
+                  ref.read(paginationProvider('purchases').notifier).state =
+                      pagination.copyWith(currentPage: page),
+              onRowsPerPageChanged: (rows) =>
+                  ref.read(paginationProvider('purchases').notifier).state =
+                      const PaginationState().copyWith(rowsPerPage: rows),
+              lang: lang,
+            ),
+          ],
         ],
       ),
     );
@@ -192,7 +219,7 @@ class _PurchasesContent extends ConsumerWidget {
     return 'P${amount.toStringAsFixed(2)}';
   }
 
-  Widget _buildTable(BuildContext context, WidgetRef ref, ColorScheme colors) {
+  Widget _buildTable(BuildContext context, WidgetRef ref, ColorScheme colors, List<PurchaseModel> pageItems) {
     final dateFormat = DateFormat('dd MMM yyyy');
 
     return SizedBox(
@@ -229,7 +256,7 @@ class _PurchasesContent extends ConsumerWidget {
           ),
           DataColumn(label: Text(t('actions', lang))),
         ],
-        rows: purchases
+        rows: pageItems
             .map((p) => _buildRow(context, ref, p, colors, dateFormat))
             .toList(),
       ),

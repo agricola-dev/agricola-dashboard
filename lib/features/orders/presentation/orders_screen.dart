@@ -1,6 +1,8 @@
 import 'package:agricola_core/agricola_core.dart';
 import 'package:agricola_dashboard/core/providers/language_provider.dart';
+import 'package:agricola_dashboard/core/providers/pagination_provider.dart';
 import 'package:agricola_dashboard/core/widgets/app_text_field.dart';
+import 'package:agricola_dashboard/core/widgets/table_pagination_bar.dart';
 import 'package:agricola_dashboard/features/orders/presentation/order_detail_dialog.dart';
 import 'package:agricola_dashboard/features/orders/presentation/widgets/order_status_badge.dart';
 import 'package:agricola_dashboard/features/orders/providers/orders_providers.dart';
@@ -57,6 +59,21 @@ class _OrdersContent extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final textTheme = Theme.of(context).textTheme;
     final colors = Theme.of(context).colorScheme;
+    final pagination = ref.watch(paginationProvider('orders'));
+    final pageItems = paginateList(orders, pagination);
+
+    ref.listen(ordersSearchProvider, (_, __) {
+      ref.read(paginationProvider('orders').notifier).state =
+          ref.read(paginationProvider('orders')).copyWith(currentPage: 0);
+    });
+    ref.listen(ordersSortProvider, (_, __) {
+      ref.read(paginationProvider('orders').notifier).state =
+          ref.read(paginationProvider('orders')).copyWith(currentPage: 0);
+    });
+    ref.listen(ordersStatusFilterProvider, (_, __) {
+      ref.read(paginationProvider('orders').notifier).state =
+          ref.read(paginationProvider('orders')).copyWith(currentPage: 0);
+    });
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
@@ -67,8 +84,21 @@ class _OrdersContent extends ConsumerWidget {
           const SizedBox(height: 24),
           if (orders.isEmpty)
             const _EmptyState()
-          else
-            _buildTable(context, ref, colors),
+          else ...[
+            _buildTable(context, ref, colors, pageItems),
+            const SizedBox(height: 16),
+            TablePaginationBar(
+              totalItems: orders.length,
+              pagination: pagination,
+              onPageChanged: (page) =>
+                  ref.read(paginationProvider('orders').notifier).state =
+                      pagination.copyWith(currentPage: page),
+              onRowsPerPageChanged: (rows) =>
+                  ref.read(paginationProvider('orders').notifier).state =
+                      const PaginationState().copyWith(rowsPerPage: rows),
+              lang: lang,
+            ),
+          ],
         ],
       ),
     );
@@ -144,7 +174,7 @@ class _OrdersContent extends ConsumerWidget {
     );
   }
 
-  Widget _buildTable(BuildContext context, WidgetRef ref, ColorScheme colors) {
+  Widget _buildTable(BuildContext context, WidgetRef ref, ColorScheme colors, List<OrderModel> pageItems) {
     final dateFormat = DateFormat('dd MMM yyyy');
 
     return SizedBox(
@@ -176,7 +206,7 @@ class _OrdersContent extends ConsumerWidget {
           ),
           DataColumn(label: Text(t('actions', lang))),
         ],
-        rows: orders.map((order) {
+        rows: pageItems.map((order) {
           final truncatedId = order.id != null && order.id!.length > 8
               ? '${order.id!.substring(0, 8)}...'
               : order.id ?? '-';
