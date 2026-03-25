@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.12.2 — 2026-03-25
+
+### Branding: App Icon & Metadata
+- Replaced default Flutter icons with Agricola branded icons (favicon, PWA icons at 192 & 512px)
+- Updated manifest.json: name, description, theme color (#2D6A4F) and background color (#1B3A2A)
+- Updated index.html: page title, description, and apple-touch title to "Agricola Dashboard"
+
 ## 0.12.1 — 2026-03-22
 
 ### Cross-Cutting: Data Table Pagination

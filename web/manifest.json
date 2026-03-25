@@ -1,11 +1,11 @@
 {
-    "name": "agricola_dashboard",
-    "short_name": "agricola_dashboard",
+    "name": "Agricola Dashboard",
+    "short_name": "Agricola",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#1B3A2A",
+    "theme_color": "#2D6A4F",
+    "description": "Agricola admin dashboard for farmers and merchants",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
