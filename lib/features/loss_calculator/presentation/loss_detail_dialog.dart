@@ -230,46 +230,37 @@ class _LossDetailDialog extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 8),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: BoxDecoration(
-            color: isBetter
-                ? BadgeColors.successBackground
-                : BadgeColors.cautionBackground,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Row(
-            children: [
-              Icon(
-                isBetter ? Icons.trending_down : Icons.trending_up,
-                size: 20,
-                color: isBetter
-                    ? BadgeColors.successForeground
-                    : BadgeColors.cautionForeground,
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  t(isBetter ? 'below_average' : 'above_average', lang),
-                  style: textTheme.bodyMedium?.copyWith(
-                    color: isBetter
-                        ? BadgeColors.successForeground
-                        : BadgeColors.cautionForeground,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              Text(
-                '${comparison.difference.abs().toStringAsFixed(1)}%',
-                style: textTheme.titleMedium?.copyWith(
+        Row(
+          children: [
+            Icon(
+              isBetter ? Icons.trending_down : Icons.trending_up,
+              size: 20,
+              color: isBetter
+                  ? BadgeColors.successForeground
+                  : BadgeColors.cautionForeground,
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                t(isBetter ? 'below_average' : 'above_average', lang),
+                style: textTheme.bodyMedium?.copyWith(
                   color: isBetter
                       ? BadgeColors.successForeground
                       : BadgeColors.cautionForeground,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
-            ],
-          ),
+            ),
+            Text(
+              '${comparison.difference.abs().toStringAsFixed(1)}%',
+              style: textTheme.titleMedium?.copyWith(
+                color: isBetter
+                    ? BadgeColors.successForeground
+                    : BadgeColors.cautionForeground,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: 12),
         // Remaining value summary

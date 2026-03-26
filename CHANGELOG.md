@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.12.3 — 2026-03-26
+
+### Refactor: Remove AI-Tell Colored Container Pattern
+- Removed tinted `Container` wrapping icon in `StatCard` — icon now uses color directly
+- Removed tinted background container from loss calculator comparison banner — icon and text use foreground colors directly
+
 ## 0.12.2 — 2026-03-25
 
 ### Branding: App Icon & Metadata
