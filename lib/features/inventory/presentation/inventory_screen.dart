@@ -54,15 +54,23 @@ class _InventoryContent extends ConsumerWidget {
     final colors = Theme.of(context).colorScheme;
     final pagination = ref.watch(paginationProvider('inventory'));
     final pageItems = paginateList(items, pagination);
+    final selectedIds = ref.watch(selectedInventoryIdsProvider);
 
-    // Reset to page 0 when search or sort changes.
+    // Clear selection and reset page on search/sort/page changes.
     ref.listen(inventorySearchProvider, (_, __) {
+      ref.read(selectedInventoryIdsProvider.notifier).state = {};
       ref.read(paginationProvider('inventory').notifier).state =
           ref.read(paginationProvider('inventory')).copyWith(currentPage: 0);
     });
     ref.listen(inventorySortProvider, (_, __) {
+      ref.read(selectedInventoryIdsProvider.notifier).state = {};
       ref.read(paginationProvider('inventory').notifier).state =
           ref.read(paginationProvider('inventory')).copyWith(currentPage: 0);
+    });
+    ref.listen(paginationProvider('inventory'), (prev, next) {
+      if (prev?.currentPage != next.currentPage) {
+        ref.read(selectedInventoryIdsProvider.notifier).state = {};
+      }
     });
 
     return SingleChildScrollView(
@@ -73,11 +81,24 @@ class _InventoryContent extends ConsumerWidget {
           // Header row
           _buildHeader(context, ref, textTheme, colors),
           const SizedBox(height: 24),
+          // Bulk action bar
+          if (selectedIds.isNotEmpty) ...[
+            _BulkActionBar(
+              selectedCount: selectedIds.length,
+              lang: lang,
+              onDelete: () => _bulkDelete(context, ref, selectedIds),
+              onUpdateCondition: (condition) =>
+                  _bulkUpdateCondition(context, ref, selectedIds, condition),
+              onClear: () =>
+                  ref.read(selectedInventoryIdsProvider.notifier).state = {},
+            ),
+            const SizedBox(height: 12),
+          ],
           // Table or empty state
           if (items.isEmpty)
             _EmptyState(lang: lang, onAdd: () => _addItem(context, ref))
           else ...[
-            _buildTable(context, ref, colors, pageItems),
+            _buildTable(context, ref, colors, pageItems, selectedIds),
             const SizedBox(height: 16),
             TablePaginationBar(
               totalItems: items.length,
@@ -151,7 +172,17 @@ class _InventoryContent extends ConsumerWidget {
     );
   }
 
-  Widget _buildTable(BuildContext context, WidgetRef ref, ColorScheme colors, List<InventoryModel> pageItems) {
+  Widget _buildTable(
+    BuildContext context,
+    WidgetRef ref,
+    ColorScheme colors,
+    List<InventoryModel> pageItems,
+    Set<String> selectedIds,
+  ) {
+    final allPageIds = pageItems
+        .where((item) => item.id != null)
+        .map((item) => item.id!)
+        .toSet();
     return SizedBox(
       width: double.infinity,
       child: DataTable(
@@ -160,15 +191,26 @@ class _InventoryContent extends ConsumerWidget {
         headingRowColor: WidgetStateProperty.all(
           colors.surfaceContainerLow,
         ),
+        onSelectAll: (selected) {
+          if (selected == true) {
+            ref.read(selectedInventoryIdsProvider.notifier).state =
+                {...selectedIds, ...allPageIds};
+          } else {
+            ref.read(selectedInventoryIdsProvider.notifier).state =
+                selectedIds.difference(allPageIds);
+          }
+        },
         columns: [
           DataColumn(
             label: Text(t('crop_type', lang)),
-            onSort: (_, ascending) => _onSort(ref, InventorySortField.cropType, ascending),
+            onSort: (_, ascending) =>
+                _onSort(ref, InventorySortField.cropType, ascending),
           ),
           DataColumn(
             label: Text(t('quantity', lang)),
             numeric: true,
-            onSort: (_, ascending) => _onSort(ref, InventorySortField.quantity, ascending),
+            onSort: (_, ascending) =>
+                _onSort(ref, InventorySortField.quantity, ascending),
           ),
           DataColumn(label: Text(t('unit', lang))),
           DataColumn(label: Text(t('condition', lang))),
@@ -181,7 +223,10 @@ class _InventoryContent extends ConsumerWidget {
           ),
           DataColumn(label: Text(t('actions', lang))),
         ],
-        rows: pageItems.map((item) => _buildRow(context, ref, item, colors)).toList(),
+        rows: pageItems
+            .map((item) =>
+                _buildRow(context, ref, item, colors, selectedIds))
+            .toList(),
       ),
     );
   }
@@ -191,10 +236,28 @@ class _InventoryContent extends ConsumerWidget {
     WidgetRef ref,
     InventoryModel item,
     ColorScheme colors,
+    Set<String> selectedIds,
   ) {
     final daysInStorage = DateTime.now().difference(item.storageDate).inDays;
+    final isSelected = item.id != null && selectedIds.contains(item.id);
 
     return DataRow(
+      selected: isSelected,
+      onSelectChanged: item.id == null
+          ? null
+          : (selected) {
+              final current =
+                  ref.read(selectedInventoryIdsProvider.notifier).state;
+              if (selected == true) {
+                ref.read(selectedInventoryIdsProvider.notifier).state = {
+                  ...current,
+                  item.id!
+                };
+              } else {
+                ref.read(selectedInventoryIdsProvider.notifier).state =
+                    current.difference({item.id!});
+              }
+            },
       cells: [
         DataCell(Text(item.cropType)),
         DataCell(Text(item.quantity.toStringAsFixed(1))),
@@ -217,7 +280,8 @@ class _InventoryContent extends ConsumerWidget {
                 onPressed: () => _editItem(context, ref, item),
               ),
               IconButton(
-                icon: Icon(Icons.delete_outline, size: 20, color: colors.error),
+                icon: Icon(Icons.delete_outline, size: 20,
+                    color: colors.error),
                 tooltip: t('delete_inventory', lang),
                 onPressed: () => _deleteItem(context, ref, item),
               ),
@@ -347,10 +411,108 @@ class _InventoryContent extends ConsumerWidget {
     );
   }
 
+  Future<void> _bulkDelete(
+    BuildContext context,
+    WidgetRef ref,
+    Set<String> selectedIds,
+  ) async {
+    final lang = ref.read(languageProvider);
+    final count = selectedIds.length;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(t('bulk_delete', lang)),
+        content: Text(
+          t('bulk_delete_confirm', lang)
+              .replaceAll('{count}', count.toString()),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(t('cancel', lang)),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.error,
+            ),
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(t('delete', lang)),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true || !context.mounted) return;
+
+    final error = await ref
+        .read(inventoryControllerProvider.notifier)
+        .bulkDeleteInventory(selectedIds.toList());
+
+    ref.read(selectedInventoryIdsProvider.notifier).state = {};
+
+    if (!context.mounted) return;
+    _showResultSnackBar(
+      context,
+      error: error,
+      successMessage: t('bulk_delete_success', lang)
+          .replaceAll('{count}', count.toString()),
+      lang: lang,
+    );
+  }
+
+  Future<void> _bulkUpdateCondition(
+    BuildContext context,
+    WidgetRef ref,
+    Set<String> selectedIds,
+    String condition,
+  ) async {
+    final lang = ref.read(languageProvider);
+    final count = selectedIds.length;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(t('bulk_update_condition', lang)),
+        content: Text(
+          t('bulk_update_condition_confirm', lang)
+              .replaceAll('{count}', count.toString())
+              .replaceAll('{condition}', condition),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(t('cancel', lang)),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(t('bulk_update_condition', lang)),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true || !context.mounted) return;
+
+    final error = await ref
+        .read(inventoryControllerProvider.notifier)
+        .bulkUpdateCondition(selectedIds.toList(), condition);
+
+    ref.read(selectedInventoryIdsProvider.notifier).state = {};
+
+    if (!context.mounted) return;
+    _showResultSnackBar(
+      context,
+      error: error,
+      successMessage: t('bulk_update_success', lang)
+          .replaceAll('{count}', count.toString()),
+      lang: lang,
+    );
+  }
+
   void _showResultSnackBar(
     BuildContext context, {
     required String? error,
-    required String successKey,
+    String? successKey,
+    String? successMessage,
     required AppLanguage lang,
   }) {
     final messenger = ScaffoldMessenger.of(context);
@@ -362,10 +524,96 @@ class _InventoryContent extends ConsumerWidget {
         ),
       );
     } else {
+      final message = successMessage ?? t(successKey!, lang);
       messenger.showSnackBar(
-        SnackBar(content: Text(t(successKey, lang))),
+        SnackBar(content: Text(message)),
       );
     }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Bulk action bar
+// ---------------------------------------------------------------------------
+
+class _BulkActionBar extends StatelessWidget {
+  const _BulkActionBar({
+    required this.selectedCount,
+    required this.lang,
+    required this.onDelete,
+    required this.onUpdateCondition,
+    required this.onClear,
+  });
+
+  final int selectedCount;
+  final AppLanguage lang;
+  final VoidCallback onDelete;
+  final ValueChanged<String> onUpdateCondition;
+  final VoidCallback onClear;
+
+  static const _conditions = [
+    'excellent',
+    'good',
+    'fair',
+    'needs_attention',
+    'critical',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      decoration: BoxDecoration(
+        color: colors.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: colors.outlineVariant),
+      ),
+      child: Row(
+        children: [
+          Text(
+            '$selectedCount ${t('items_selected', lang)}',
+            style: textTheme.titleSmall?.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(width: 8),
+          TextButton(
+            onPressed: onClear,
+            child: Text(t('cancel', lang)),
+          ),
+          const Spacer(),
+          PopupMenuButton<String>(
+            tooltip: t('bulk_update_condition', lang),
+            onSelected: onUpdateCondition,
+            itemBuilder: (_) => _conditions
+                .map((c) => PopupMenuItem(
+                      value: c,
+                      child: ConditionBadge(condition: c, lang: lang),
+                    ))
+                .toList(),
+            child: IgnorePointer(
+              child: OutlinedButton.icon(
+                onPressed: () {},
+                icon: const Icon(Icons.sync, size: 18),
+                label: Text(t('bulk_update_condition', lang)),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          FilledButton.icon(
+            style: FilledButton.styleFrom(
+              backgroundColor: colors.error,
+            ),
+            onPressed: onDelete,
+            icon: const Icon(Icons.delete_outline, size: 18),
+            label: Text(t('bulk_delete', lang)),
+          ),
+        ],
+      ),
+    );
   }
 }
 

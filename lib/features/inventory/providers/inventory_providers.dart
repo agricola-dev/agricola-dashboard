@@ -32,6 +32,9 @@ class InventorySort {
   }
 }
 
+/// Set of selected inventory item IDs for bulk actions.
+final selectedInventoryIdsProvider = StateProvider<Set<String>>((_) => {});
+
 /// Search text for filtering inventory items.
 final inventorySearchProvider = StateProvider<String>((_) => '');
 
@@ -84,6 +87,33 @@ class InventoryController extends AsyncNotifier<List<InventoryModel>> {
     try {
       final service = ref.read(inventoryApiServiceProvider);
       await service.deleteInventory(id);
+      ref.invalidateSelf();
+      await future;
+      return null;
+    } catch (e) {
+      return e.toString();
+    }
+  }
+
+  /// Bulk delete selected items. Returns null on success, error message on failure.
+  Future<String?> bulkDeleteInventory(List<String> ids) async {
+    try {
+      final service = ref.read(inventoryApiServiceProvider);
+      await service.bulkDeleteInventory(ids);
+      ref.invalidateSelf();
+      await future;
+      return null;
+    } catch (e) {
+      return e.toString();
+    }
+  }
+
+  /// Bulk update condition. Returns null on success, error message on failure.
+  Future<String?> bulkUpdateCondition(
+      List<String> ids, String condition) async {
+    try {
+      final service = ref.read(inventoryApiServiceProvider);
+      await service.bulkUpdateCondition(ids, condition);
       ref.invalidateSelf();
       await future;
       return null;

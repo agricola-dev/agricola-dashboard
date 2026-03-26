@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.12.4 — 2026-03-25
+
+### Feature: Inventory Bulk Actions (Phase 3.7)
+- Checkboxes on all inventory table rows + select-all in table header (current page scope)
+- `_BulkActionBar` — appears when items are selected, shows count + Clear + Update Condition + Delete buttons
+- Bulk delete: confirmation dialog with item count, calls `POST /api/v1/inventory/bulk-delete`
+- Bulk update condition: popup menu with 5 condition options, confirmation dialog, calls `PATCH /api/v1/inventory/bulk-condition`
+- Selection auto-clears on search, sort, or page change
+- `selectedInventoryIdsProvider` (StateProvider) + `bulkDeleteInventory` and `bulkUpdateCondition` on `InventoryController`
+- New bilingual translation keys: `items_selected`, `bulk_delete`, `bulk_update_condition`, `bulk_delete_confirm`, `bulk_update_condition_confirm`, `bulk_delete_success`, `bulk_update_success`, `select_condition`
+
 ## 0.12.3 — 2026-03-26
 
 ### Refactor: Remove AI-Tell Colored Container Pattern
