@@ -1,5 +1,6 @@
 import 'package:agricola_core/agricola_core.dart';
 import 'package:agricola_dashboard/core/providers/language_provider.dart';
+import 'package:agricola_dashboard/core/utils/form_validators.dart';
 import 'package:agricola_dashboard/core/widgets/app_buttons.dart';
 import 'package:agricola_dashboard/core/widgets/app_text_field.dart';
 import 'package:agricola_dashboard/core/widgets/labeled_divider.dart';
@@ -68,9 +69,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         keyboardType: TextInputType.emailAddress,
                         autofillHints: const [AutofillHints.email],
                         prefixIcon: Icons.email_outlined,
-                        validator: (value) => (value == null || value.trim().isEmpty)
-                            ? t('email_required', lang)
-                            : null,
+                        validator: FormValidators.email(lang),
                       ),
                       const SizedBox(height: 16),
                       AppTextField(
@@ -88,9 +87,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           onPressed: () =>
                               setState(() => _obscurePassword = !_obscurePassword),
                         ),
-                        validator: (value) => (value == null || value.isEmpty)
-                            ? t('password_required', lang)
-                            : null,
+                        validator: FormValidators.password(lang),
                       ),
                     ],
                   ),

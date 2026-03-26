@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.13.0 — 2026-03-26
+
+### Cross-Cutting: Form Validation — ValidationRules Wired
+- New `FormValidators` utility at `lib/core/utils/form_validators.dart`: bilingual factory methods (`required`, `email`, `password`, `positiveNumber`, `optionalPositiveNumber`, `businessName`, `village`)
+- `businessName` and `village` validators reference `ValidationRules` constants (min/max lengths) from `agricola-core`
+- Replaced all inline validator lambdas across 8 form dialogs and login screen
+- Removed local `_requiredValidator` helper from `marketplace_form_dialog.dart` (replaced by `FormValidators.required`)
+- Replaced English-only `ProfileValidators` calls in `profile_form_dialog.dart` with bilingual `FormValidators` equivalents
+- New i18n keys in core: `field_required`, `email_invalid`, `password_too_short`, `number_invalid`, `number_positive`, `name_too_short`, `name_too_long`, `village_too_short`, `village_too_long`
+
 ## 0.12.4 — 2026-03-25
 
 ### Feature: Inventory Bulk Actions (Phase 3.7)

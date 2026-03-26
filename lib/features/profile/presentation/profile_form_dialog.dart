@@ -1,4 +1,5 @@
 import 'package:agricola_core/agricola_core.dart';
+import 'package:agricola_dashboard/core/utils/form_validators.dart';
 import 'package:agricola_dashboard/core/widgets/app_dropdown_field.dart';
 import 'package:agricola_dashboard/core/widgets/app_text_field.dart';
 import 'package:flutter/material.dart';
@@ -139,7 +140,7 @@ class _FarmerProfileFormState extends State<_FarmerProfileForm> {
                   items: _locations,
                   itemLabelBuilder: (v) => v,
                   onChanged: (v) => setState(() => _village = v ?? ''),
-                  validator: ProfileValidators.validateVillage,
+                  validator: FormValidators.village(lang),
                 ),
                 if (isOtherVillage) ...[
                   const SizedBox(height: 16),
@@ -147,7 +148,7 @@ class _FarmerProfileFormState extends State<_FarmerProfileForm> {
                     label: t('village', lang),
                     initialValue: _customVillage,
                     onChanged: (v) => _customVillage = v,
-                    validator: ProfileValidators.validateVillage,
+                    validator: FormValidators.village(lang),
                   ),
                 ],
                 const SizedBox(height: 16),
@@ -157,8 +158,7 @@ class _FarmerProfileFormState extends State<_FarmerProfileForm> {
                   items: _farmSizes,
                   itemLabelBuilder: (v) => v,
                   onChanged: (v) => setState(() => _farmSize = v ?? ''),
-                  validator: (v) =>
-                      v == null || v.isEmpty ? t('required', lang) : null,
+                  validator: FormValidators.required(lang),
                 ),
                 const SizedBox(height: 16),
                 Text(
@@ -311,7 +311,7 @@ class _MerchantProfileFormState extends State<_MerchantProfileForm> {
                   label: t('business_name', lang),
                   initialValue: _businessName,
                   onChanged: (v) => _businessName = v,
-                  validator: ProfileValidators.validateBusinessName,
+                  validator: FormValidators.businessName(lang),
                 ),
                 const SizedBox(height: 16),
                 AppDropdownField<MerchantType>(
@@ -332,7 +332,7 @@ class _MerchantProfileFormState extends State<_MerchantProfileForm> {
                   items: _locations,
                   itemLabelBuilder: (v) => v,
                   onChanged: (v) => setState(() => _location = v ?? ''),
-                  validator: ProfileValidators.validateVillage,
+                  validator: FormValidators.village(lang),
                 ),
                 if (isOtherLocation) ...[
                   const SizedBox(height: 16),
@@ -340,7 +340,7 @@ class _MerchantProfileFormState extends State<_MerchantProfileForm> {
                     label: t('location', lang),
                     initialValue: _customLocation,
                     onChanged: (v) => _customLocation = v,
-                    validator: ProfileValidators.validateVillage,
+                    validator: FormValidators.village(lang),
                   ),
                 ],
                 const SizedBox(height: 16),

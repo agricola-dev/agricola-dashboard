@@ -1,4 +1,5 @@
 import 'package:agricola_core/agricola_core.dart';
+import 'package:agricola_dashboard/core/utils/form_validators.dart';
 import 'package:agricola_dashboard/core/widgets/app_dropdown_field.dart';
 import 'package:agricola_dashboard/core/widgets/app_text_field.dart';
 import 'package:flutter/material.dart';
@@ -139,7 +140,7 @@ class _MarketplaceFormDialogState extends State<_MarketplaceFormDialog> {
                   controller: _titleController,
                   label: t('listing_title', lang),
                   prefixIcon: Icons.title,
-                  validator: _requiredValidator(lang),
+                  validator: FormValidators.required(lang),
                 ),
                 const SizedBox(height: 16),
                 AppTextField(
@@ -147,7 +148,7 @@ class _MarketplaceFormDialogState extends State<_MarketplaceFormDialog> {
                   label: t('listing_description', lang),
                   prefixIcon: Icons.description,
                   maxLines: 3,
-                  validator: _requiredValidator(lang),
+                  validator: FormValidators.required(lang),
                 ),
                 const SizedBox(height: 16),
                 Row(
@@ -194,15 +195,7 @@ class _MarketplaceFormDialogState extends State<_MarketplaceFormDialog> {
                         keyboardType: const TextInputType.numberWithOptions(
                           decimal: true,
                         ),
-                        validator: (value) {
-                          if (value != null && value.isNotEmpty) {
-                            final parsed = double.tryParse(value);
-                            if (parsed == null || parsed < 0) {
-                              return t('quantity_invalid', lang);
-                            }
-                          }
-                          return null;
-                        },
+                        validator: FormValidators.optionalPositiveNumber(lang),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -230,7 +223,7 @@ class _MarketplaceFormDialogState extends State<_MarketplaceFormDialog> {
                         controller: _locationController,
                         label: t('listing_location', lang),
                         prefixIcon: Icons.location_on,
-                        validator: _requiredValidator(lang),
+                        validator: FormValidators.required(lang),
                       ),
                     ),
                   ],
@@ -281,15 +274,6 @@ class _MarketplaceFormDialogState extends State<_MarketplaceFormDialog> {
         ),
       ],
     );
-  }
-
-  String? Function(String?) _requiredValidator(AppLanguage lang) {
-    return (value) {
-      if (value == null || value.trim().isEmpty) {
-        return t('field_required', lang);
-      }
-      return null;
-    };
   }
 
   Future<void> _pickHarvestDate(BuildContext context) async {

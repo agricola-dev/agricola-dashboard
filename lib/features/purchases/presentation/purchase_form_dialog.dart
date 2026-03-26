@@ -1,4 +1,5 @@
 import 'package:agricola_core/agricola_core.dart';
+import 'package:agricola_dashboard/core/utils/form_validators.dart';
 import 'package:agricola_dashboard/core/widgets/app_dropdown_field.dart';
 import 'package:agricola_dashboard/core/widgets/app_text_field.dart';
 import 'package:flutter/material.dart';
@@ -104,24 +105,14 @@ class _PurchaseFormDialogState extends State<_PurchaseFormDialog> {
                   controller: _sellerNameController,
                   label: t('seller_name', lang),
                   prefixIcon: Icons.person,
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return t('field_required', lang);
-                    }
-                    return null;
-                  },
+                  validator: FormValidators.required(lang),
                 ),
                 const SizedBox(height: 16),
                 AppTextField(
                   controller: _cropTypeController,
                   label: t('crop_type', lang),
                   prefixIcon: Icons.grass,
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return t('field_required', lang);
-                    }
-                    return null;
-                  },
+                  validator: FormValidators.required(lang),
                 ),
                 const SizedBox(height: 16),
                 Row(
@@ -136,16 +127,7 @@ class _PurchaseFormDialogState extends State<_PurchaseFormDialog> {
                           decimal: true,
                         ),
                         onChanged: (_) => setState(() {}),
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return t('quantity_required', lang);
-                          }
-                          final parsed = double.tryParse(value);
-                          if (parsed == null || parsed <= 0) {
-                            return t('quantity_invalid', lang);
-                          }
-                          return null;
-                        },
+                        validator: FormValidators.positiveNumber(lang),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -171,16 +153,7 @@ class _PurchaseFormDialogState extends State<_PurchaseFormDialog> {
                     decimal: true,
                   ),
                   onChanged: (_) => setState(() {}),
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return t('field_required', lang);
-                    }
-                    final parsed = double.tryParse(value);
-                    if (parsed == null || parsed <= 0) {
-                      return t('quantity_invalid', lang);
-                    }
-                    return null;
-                  },
+                  validator: FormValidators.positiveNumber(lang),
                 ),
                 const SizedBox(height: 12),
                 Align(
