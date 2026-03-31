@@ -9,7 +9,14 @@ import 'package:url_launcher/url_launcher.dart';
 class MobileRedirectScreen extends ConsumerWidget {
   const MobileRedirectScreen({super.key});
 
-  static const _appStoreUrl = 'https://agricola-app.com/download';
+  static const _playStoreUrl =
+      'https://play.google.com/store/apps/details?id=com.agricola.prod';
+
+  // Android intent URL: opens app if installed, falls back to Play Store.
+  // canLaunchUrl is unreliable for custom schemes in mobile browsers.
+  static const _openAppUrl =
+      'intent://home#Intent;scheme=agricola;package=com.agricola.prod;'
+      'S.browser_fallback_url=https%3A%2F%2Fplay.google.com%2Fstore%2Fapps%2Fdetails%3Fid%3Dcom.agricola.prod;end';
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -87,18 +94,12 @@ class MobileRedirectScreen extends ConsumerWidget {
   }
 
   Future<void> _openApp() async {
-    // Try the custom scheme first (deep link into the installed app)
-    final appUri = Uri.parse('agricola://home');
-    if (await canLaunchUrl(appUri)) {
-      await launchUrl(appUri, mode: LaunchMode.externalApplication);
-    } else {
-      // Fallback to download page
-      await _downloadApp();
-    }
+    final uri = Uri.parse(_openAppUrl);
+    await launchUrl(uri, mode: LaunchMode.externalApplication);
   }
 
   Future<void> _downloadApp() async {
-    final uri = Uri.parse(_appStoreUrl);
+    final uri = Uri.parse(_playStoreUrl);
     await launchUrl(uri, mode: LaunchMode.externalApplication);
   }
 }
