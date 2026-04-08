@@ -40,7 +40,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       if (next.hasError) {
         ScaffoldMessenger.of(context)
           ..hideCurrentSnackBar()
-          ..showSnackBar(SnackBar(content: Text(next.error.toString())));
+          ..showSnackBar(SnackBar(content: Text(t(next.error.toString(), lang))));
       }
     });
 
@@ -107,7 +107,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   Padding(
                     padding: const EdgeInsets.only(bottom: 12),
                     child: Text(
-                      loginState.error.toString(),
+                      t(loginState.error.toString(), lang),
                       style: TextStyle(color: colors.error),
                       textAlign: TextAlign.center,
                     ),

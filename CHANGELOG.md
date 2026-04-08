@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.13.1 — 2026-04-08
+
+### Fix: User-Friendly Bilingual Error Messages (D-01)
+- All CRUD controllers now return i18n keys instead of raw exception strings — no more `DioException`/`ClientException` JSON leaking to the UI
+- Login controller maps `AuthFailureType` enum to specific bilingual messages (wrong password, user not found, too many attempts, etc.) instead of raw Firebase exception text
+- All SnackBar error displays and full-page error views now translate error keys via `t(key, lang)`
+- Dashboard and reports `_ErrorView`/`_InlineError` widgets: hardcoded English "Retry" replaced with `t('retry', lang)`
+- 18 new bilingual error translation keys added to `agricola-core` (generic CRUD errors + auth-specific errors, EN + Setswana)
+
 ## 0.13.0 — 2026-03-26
 
 ### Cross-Cutting: Form Validation — ValidationRules Wired

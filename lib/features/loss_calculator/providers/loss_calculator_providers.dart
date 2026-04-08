@@ -64,7 +64,7 @@ class LossCalcController extends AsyncNotifier<List<LossCalculation>> {
       await future;
       return null;
     } catch (e) {
-      return e.toString();
+      return 'error_save_failed';
     }
   }
 
@@ -77,7 +77,7 @@ class LossCalcController extends AsyncNotifier<List<LossCalculation>> {
       await future;
       return null;
     } catch (e) {
-      return e.toString();
+      return 'error_delete_failed';
     }
   }
 }

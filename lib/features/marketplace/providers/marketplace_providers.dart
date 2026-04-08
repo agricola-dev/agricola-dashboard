@@ -71,7 +71,7 @@ class MyListingsController extends AsyncNotifier<List<MarketplaceListing>> {
       await future;
       return null;
     } catch (e) {
-      return e.toString();
+      return 'error_save_failed';
     }
   }
 
@@ -84,7 +84,7 @@ class MyListingsController extends AsyncNotifier<List<MarketplaceListing>> {
       await future;
       return null;
     } catch (e) {
-      return e.toString();
+      return 'error_update_failed';
     }
   }
 
@@ -97,7 +97,7 @@ class MyListingsController extends AsyncNotifier<List<MarketplaceListing>> {
       await future;
       return null;
     } catch (e) {
-      return e.toString();
+      return 'error_delete_failed';
     }
   }
 }

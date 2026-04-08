@@ -74,8 +74,9 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
           analyticsAsync.when(
             loading: () => const Center(child: CircularProgressIndicator()),
             error: (error, _) => _ErrorView(
-              message: error.toString(),
+              message: t('error_try_again', lang),
               onRetry: () => ref.invalidate(analyticsProvider),
+              lang: lang,
             ),
             data: (analytics) => _buildAnalyticsContent(
               context,
@@ -458,7 +459,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
         final cropsAsync = ref.watch(cropControllerProvider);
         return cropsAsync.when(
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (e, _) => _InlineError(message: e.toString()),
+          error: (e, _) => _InlineError(message: t('error_try_again', lang), lang: lang),
           data: (crops) {
             final filtered = dateRange != null
                 ? crops
@@ -480,7 +481,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
         }
         return harvestsAsync.when(
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (e, _) => _InlineError(message: e.toString()),
+          error: (e, _) => _InlineError(message: t('error_try_again', lang), lang: lang),
           data: (harvests) {
             final filtered = dateRange != null
                 ? harvests
@@ -498,7 +499,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
         final inventoryAsync = ref.watch(inventoryControllerProvider);
         return inventoryAsync.when(
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (e, _) => _InlineError(message: e.toString()),
+          error: (e, _) => _InlineError(message: t('error_try_again', lang), lang: lang),
           data: (items) {
             final filtered = dateRange != null
                 ? items
@@ -516,7 +517,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
         final purchasesAsync = ref.watch(purchasesControllerProvider);
         return purchasesAsync.when(
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (e, _) => _InlineError(message: e.toString()),
+          error: (e, _) => _InlineError(message: t('error_try_again', lang), lang: lang),
           data: (purchases) {
             final filtered = dateRange != null
                 ? purchases
@@ -534,7 +535,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
         final ordersAsync = ref.watch(ordersControllerProvider);
         return ordersAsync.when(
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (e, _) => _InlineError(message: e.toString()),
+          error: (e, _) => _InlineError(message: t('error_try_again', lang), lang: lang),
           data: (orders) {
             final filtered = dateRange != null
                 ? orders
@@ -1014,8 +1015,9 @@ class _HarvestsNoCropHint extends StatelessWidget {
 }
 
 class _InlineError extends StatelessWidget {
-  const _InlineError({required this.message});
+  const _InlineError({required this.message, required this.lang});
   final String message;
+  final AppLanguage lang;
 
   @override
   Widget build(BuildContext context) {
@@ -1031,9 +1033,14 @@ class _InlineError extends StatelessWidget {
 }
 
 class _ErrorView extends StatelessWidget {
-  const _ErrorView({required this.message, required this.onRetry});
+  const _ErrorView({
+    required this.message,
+    required this.onRetry,
+    required this.lang,
+  });
   final String message;
   final VoidCallback onRetry;
+  final AppLanguage lang;
 
   @override
   Widget build(BuildContext context) {
@@ -1051,7 +1058,7 @@ class _ErrorView extends StatelessWidget {
           FilledButton.icon(
             onPressed: onRetry,
             icon: const Icon(Icons.refresh),
-            label: const Text('Retry'),
+            label: Text(t('retry', lang)),
           ),
         ],
       ),

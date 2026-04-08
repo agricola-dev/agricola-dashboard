@@ -22,7 +22,7 @@ class LossCalculatorScreen extends ConsumerWidget {
     return filteredAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (error, _) => _ErrorView(
-        message: error.toString(),
+        message: t('error_try_again', lang),
         onRetry: () => ref.invalidate(lossCalcControllerProvider),
         lang: lang,
       ),
@@ -312,7 +312,7 @@ class _LossCalcContent extends ConsumerWidget {
     if (error != null) {
       messenger.showSnackBar(
         SnackBar(
-          content: Text(error),
+          content: Text(t(error, lang)),
           backgroundColor: Theme.of(context).colorScheme.error,
         ),
       );

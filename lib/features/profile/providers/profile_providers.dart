@@ -56,7 +56,7 @@ class ProfileController extends AsyncNotifier<DisplayableProfile> {
       await future;
       return null;
     } catch (e) {
-      return e.toString();
+      return 'error_update_failed';
     }
   }
 
@@ -75,7 +75,7 @@ class ProfileController extends AsyncNotifier<DisplayableProfile> {
       await future;
       return null;
     } catch (e) {
-      return e.toString();
+      return 'error_update_failed';
     }
   }
 
@@ -88,7 +88,7 @@ class ProfileController extends AsyncNotifier<DisplayableProfile> {
       await future;
       return null;
     } catch (e) {
-      return e.toString();
+      return 'error_save_failed';
     }
   }
 
@@ -101,7 +101,7 @@ class ProfileController extends AsyncNotifier<DisplayableProfile> {
       await future;
       return null;
     } catch (e) {
-      return e.toString();
+      return 'error_save_failed';
     }
   }
 
@@ -112,7 +112,7 @@ class ProfileController extends AsyncNotifier<DisplayableProfile> {
       await service.deleteProfile(profileId);
       return null;
     } catch (e) {
-      return e.toString();
+      return 'error_delete_failed';
     }
   }
 }

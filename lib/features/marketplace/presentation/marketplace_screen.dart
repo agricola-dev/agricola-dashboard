@@ -100,7 +100,7 @@ class _MyListingsTab extends ConsumerWidget {
     return filteredAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (error, _) => _ErrorView(
-        message: error.toString(),
+        message: t('error_try_again', lang),
         onRetry: () => ref.invalidate(myListingsControllerProvider),
         lang: lang,
       ),
@@ -398,7 +398,7 @@ class _MyListingsContent extends ConsumerWidget {
     if (error != null) {
       messenger.showSnackBar(
         SnackBar(
-          content: Text(error),
+          content: Text(t(error, lang)),
           backgroundColor: Theme.of(context).colorScheme.error,
         ),
       );
@@ -433,7 +433,7 @@ class _BrowseMarketplaceTab extends ConsumerWidget {
           asyncListings.when(
             loading: () => const Center(child: CircularProgressIndicator()),
             error: (error, _) => _ErrorView(
-              message: error.toString(),
+              message: t('error_try_again', lang),
               onRetry: () =>
                   ref.invalidate(browseListingsControllerProvider),
               lang: lang,

@@ -77,7 +77,7 @@ class OrdersController extends AsyncNotifier<List<OrderModel>> {
       await future;
       return null;
     } catch (e) {
-      return e.toString();
+      return 'error_status_update_failed';
     }
   }
 
@@ -90,7 +90,7 @@ class OrdersController extends AsyncNotifier<List<OrderModel>> {
       await future;
       return null;
     } catch (e) {
-      return e.toString();
+      return 'error_cancel_failed';
     }
   }
 }

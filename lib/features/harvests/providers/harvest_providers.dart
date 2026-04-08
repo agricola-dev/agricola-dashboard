@@ -34,7 +34,7 @@ class HarvestController extends AsyncNotifier<List<HarvestModel>> {
       await future;
       return null;
     } catch (e) {
-      return e.toString();
+      return 'error_save_failed';
     }
   }
 
@@ -47,7 +47,7 @@ class HarvestController extends AsyncNotifier<List<HarvestModel>> {
       await future;
       return null;
     } catch (e) {
-      return e.toString();
+      return 'error_delete_failed';
     }
   }
 }

@@ -54,7 +54,7 @@ class _HarvestsScreenState extends ConsumerState<HarvestsScreen> {
               loading: () =>
                   const Center(child: CircularProgressIndicator()),
               error: (error, _) => _ErrorView(
-                message: error.toString(),
+                message: t('error_try_again', lang),
                 onRetry: () => ref.invalidate(harvestControllerProvider),
                 lang: lang,
               ),
@@ -370,7 +370,7 @@ class _HarvestsScreenState extends ConsumerState<HarvestsScreen> {
     if (error != null) {
       messenger.showSnackBar(
         SnackBar(
-          content: Text(error),
+          content: Text(t(error, lang)),
           backgroundColor: Theme.of(context).colorScheme.error,
         ),
       );

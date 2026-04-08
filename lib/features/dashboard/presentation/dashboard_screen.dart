@@ -21,8 +21,9 @@ class DashboardScreen extends ConsumerWidget {
     return analyticsAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (error, _) => _ErrorView(
-        message: error.toString(),
+        message: t('error_try_again', lang),
         onRetry: () => ref.invalidate(analyticsProvider),
+        lang: lang,
       ),
       data: (analytics) => _DashboardContent(
         analytics: analytics,
@@ -711,10 +712,15 @@ class _LegendItem extends StatelessWidget {
 // ---------------------------------------------------------------------------
 
 class _ErrorView extends StatelessWidget {
-  const _ErrorView({required this.message, required this.onRetry});
+  const _ErrorView({
+    required this.message,
+    required this.onRetry,
+    required this.lang,
+  });
 
   final String message;
   final VoidCallback onRetry;
+  final AppLanguage lang;
 
   @override
   Widget build(BuildContext context) {
@@ -735,7 +741,7 @@ class _ErrorView extends StatelessWidget {
           FilledButton.icon(
             onPressed: onRetry,
             icon: const Icon(Icons.refresh),
-            label: const Text('Retry'),
+            label: Text(t('retry', lang)),
           ),
         ],
       ),

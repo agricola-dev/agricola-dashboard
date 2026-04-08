@@ -18,7 +18,7 @@ class ProfileScreen extends ConsumerWidget {
     return profileAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (error, _) => _ErrorView(
-        message: error.toString(),
+        message: t('error_try_again', lang),
         onRetry: () => ref.invalidate(profileControllerProvider),
         lang: lang,
       ),
@@ -427,7 +427,7 @@ class _ProfileContent extends ConsumerWidget {
     result.fold(
       (failure) => ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(failure.message),
+          content: Text(t('error_auth_unknown', lang)),
           backgroundColor: Theme.of(context).colorScheme.error,
         ),
       ),
@@ -465,7 +465,7 @@ class _ProfileContent extends ConsumerWidget {
       if (error != null && context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(error),
+            content: Text(t(error, lang)),
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
@@ -483,7 +483,7 @@ class _ProfileContent extends ConsumerWidget {
         // requires-recent-login: tell user to sign out and sign in again
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(failure.message),
+            content: Text(t('error_auth_unknown', lang)),
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
@@ -499,7 +499,7 @@ class _ProfileContent extends ConsumerWidget {
     if (error != null) {
       messenger.showSnackBar(
         SnackBar(
-          content: Text(error),
+          content: Text(t(error, lang)),
           backgroundColor: Theme.of(context).colorScheme.error,
         ),
       );

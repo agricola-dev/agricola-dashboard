@@ -65,7 +65,7 @@ class InventoryController extends AsyncNotifier<List<InventoryModel>> {
       await future;
       return null;
     } catch (e) {
-      return e.toString();
+      return 'error_save_failed';
     }
   }
 
@@ -78,7 +78,7 @@ class InventoryController extends AsyncNotifier<List<InventoryModel>> {
       await future;
       return null;
     } catch (e) {
-      return e.toString();
+      return 'error_update_failed';
     }
   }
 
@@ -91,7 +91,7 @@ class InventoryController extends AsyncNotifier<List<InventoryModel>> {
       await future;
       return null;
     } catch (e) {
-      return e.toString();
+      return 'error_delete_failed';
     }
   }
 
@@ -104,7 +104,7 @@ class InventoryController extends AsyncNotifier<List<InventoryModel>> {
       await future;
       return null;
     } catch (e) {
-      return e.toString();
+      return 'error_bulk_delete_failed';
     }
   }
 
@@ -118,7 +118,7 @@ class InventoryController extends AsyncNotifier<List<InventoryModel>> {
       await future;
       return null;
     } catch (e) {
-      return e.toString();
+      return 'error_bulk_update_failed';
     }
   }
 }

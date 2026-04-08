@@ -75,7 +75,7 @@ class CropController extends AsyncNotifier<List<CropModel>> {
       await future;
       return null;
     } catch (e) {
-      return e.toString();
+      return 'error_save_failed';
     }
   }
 
@@ -88,7 +88,7 @@ class CropController extends AsyncNotifier<List<CropModel>> {
       await future;
       return null;
     } catch (e) {
-      return e.toString();
+      return 'error_update_failed';
     }
   }
 
@@ -101,7 +101,7 @@ class CropController extends AsyncNotifier<List<CropModel>> {
       await future;
       return null;
     } catch (e) {
-      return e.toString();
+      return 'error_delete_failed';
     }
   }
 }

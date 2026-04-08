@@ -74,7 +74,7 @@ class PurchasesController extends AsyncNotifier<List<PurchaseModel>> {
       await future;
       return null;
     } catch (e) {
-      return e.toString();
+      return 'error_save_failed';
     }
   }
 
@@ -87,7 +87,7 @@ class PurchasesController extends AsyncNotifier<List<PurchaseModel>> {
       await future;
       return null;
     } catch (e) {
-      return e.toString();
+      return 'error_update_failed';
     }
   }
 
@@ -100,7 +100,7 @@ class PurchasesController extends AsyncNotifier<List<PurchaseModel>> {
       await future;
       return null;
     } catch (e) {
-      return e.toString();
+      return 'error_delete_failed';
     }
   }
 }
