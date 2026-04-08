@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.14.1 — 2026-04-09
+
+### Fix: Global Error Boundary (D-02)
+- Added `lib/core/widgets/error_screen.dart` — branded full-page error screen replacing Flutter's default grey screen
+- Reads language preference from localStorage directly (no Riverpod dependency) for bilingual EN/Setswana messaging
+- Shows Agricola logo, error icon, bilingual title + subtitle, and a "Reload Page / Leka Gape" button (`web.window.location.reload()`)
+- In `kDebugMode` only: displays the exception string in a styled container for developer debugging
+- `main.dart`: wired `ErrorWidget.builder` (widget build errors), `FlutterError.onError` (framework errors → console), and `PlatformDispatcher.instance.onError` (async/zone errors → console)
+
 ## 0.14.0 — 2026-04-08
 
 ### Feature: GA4 Analytics (W-02)
