@@ -1,4 +1,5 @@
 import 'package:agricola_core/agricola_core.dart';
+import 'package:agricola_dashboard/core/analytics/analytics_provider.dart';
 import 'package:agricola_dashboard/core/providers/language_provider.dart';
 import 'package:agricola_dashboard/core/utils/form_validators.dart';
 import 'package:agricola_dashboard/core/widgets/app_buttons.dart';
@@ -21,6 +22,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _emailCtrl = TextEditingController();
   final _passwordCtrl = TextEditingController();
   bool _obscurePassword = true;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        ref.read(analyticsServiceProvider).logPageView('/login');
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -124,9 +135,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 AppSecondaryButton(
                   label: t('sign_in_with_google', lang),
                   icon: Icons.g_mobiledata,
-                  onPressed: isLoading
-                      ? null
-                      : ref.read(loginControllerProvider.notifier).signInWithGoogle,
+                  onPressed: isLoading ? null : _handleGoogleSignIn,
                 ),
               ],
             ),
@@ -138,10 +147,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   void _handleSignIn() {
     if (!_formKey.currentState!.validate()) return;
+    ref.read(analyticsServiceProvider).logCtaClick(
+          ctaName: 'sign_in_email',
+          screen: '/login',
+        );
     ref.read(loginControllerProvider.notifier).signInWithEmail(
           email: _emailCtrl.text.trim(),
           password: _passwordCtrl.text,
         );
+  }
+
+  void _handleGoogleSignIn() {
+    ref.read(analyticsServiceProvider).logCtaClick(
+          ctaName: 'sign_in_google',
+          screen: '/login',
+        );
+    ref.read(loginControllerProvider.notifier).signInWithGoogle();
   }
 
   void _handleResetPassword(AppLanguage lang) async {
@@ -152,6 +173,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       );
       return;
     }
+    ref.read(analyticsServiceProvider).logCtaClick(
+          ctaName: 'forgot_password',
+          screen: '/login',
+        );
     final sent =
         await ref.read(loginControllerProvider.notifier).resetPassword(email);
     if (sent && mounted) {

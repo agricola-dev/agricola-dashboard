@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:agricola_core/agricola_core.dart';
+import 'package:agricola_dashboard/core/analytics/analytics_provider.dart';
 import 'package:agricola_dashboard/core/providers/language_provider.dart';
 import 'package:agricola_dashboard/core/widgets/chart_card.dart';
 import 'package:agricola_dashboard/core/widgets/period_filter.dart';
@@ -585,7 +586,13 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
         ),
         const SizedBox(width: 12),
         OutlinedButton.icon(
-          onPressed: () => WebExportService.printPage(),
+          onPressed: () {
+            ref.read(analyticsServiceProvider).logCtaClick(
+                  ctaName: 'print_report',
+                  screen: '/reports',
+                );
+            WebExportService.printPage();
+          },
           icon: const Icon(Icons.print_outlined, size: 18),
           label: Text(t('print_report', lang)),
         ),
@@ -594,6 +601,10 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
   }
 
   Future<void> _exportCsv(AppLanguage lang, String dataset) async {
+    ref.read(analyticsServiceProvider).logCtaClick(
+          ctaName: 'export_csv',
+          screen: '/reports',
+        );
     ref.read(reportsExportLoadingProvider.notifier).state = true;
     try {
       String csv;
@@ -701,6 +712,10 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
       return;
     }
 
+    ref.read(analyticsServiceProvider).logCtaClick(
+          ctaName: 'export_pdf',
+          screen: '/reports',
+        );
     ref.read(reportsExportLoadingProvider.notifier).state = true;
     try {
       final period = ref.read(analyticsPeriodProvider);

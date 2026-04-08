@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.14.0 — 2026-04-08
+
+### Feature: GA4 Analytics (W-02)
+- Added `firebase_analytics: ^11.3.4` dependency
+- New `AnalyticsService` + `analyticsServiceProvider` at `lib/core/analytics/`
+- **Page views**: `DashboardShell` tracks every shell route change via `GoRouterState` dependency in `didChangeDependencies`; `LoginScreen.initState` tracks the login page
+- **Scroll depth**: `NotificationListener<ScrollNotification>` in `DashboardShell` fires `scroll_depth` events at 25%, 50%, 75%, 100% — thresholds reset on each page change
+- **CTA clicks** (`cta_click` event with `cta_name` + `screen` params):
+  - Login: `sign_in_email`, `sign_in_google`, `forgot_password`
+  - Reports: `export_csv`, `export_pdf`, `print_report`
+- **Referral sources**: auto-captured by the Firebase Analytics JS SDK (`document.referrer` + UTM params) — no extra code needed
+
 ## 0.13.1 — 2026-04-08
 
 ### Fix: User-Friendly Bilingual Error Messages (D-01)
