@@ -1,4 +1,5 @@
 import 'package:agricola_core/agricola_core.dart';
+import 'package:agricola_dashboard/core/network/token_refresh_interceptor.dart';
 import 'package:agricola_dashboard/core/network/web_auth_token_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,7 +19,10 @@ final httpClientProvider = Provider<Dio>((ref) {
   // 2. Auth interceptor (injects Firebase JWT)
   dio.interceptors.add(AuthInterceptor(WebAuthTokenProvider()));
 
-  // 3. Log interceptor (debug only)
+  // 3. Token refresh interceptor (retries 401s with a fresh token)
+  dio.interceptors.add(TokenRefreshInterceptor(dio));
+
+  // 4. Log interceptor (debug only)
   if (EnvironmentConfig.enableLogging) {
     dio.interceptors.add(
       LogInterceptor(

@@ -14,7 +14,7 @@ class WebAuthRepository implements AuthRepository {
 
   @override
   Stream<UserModel?> get authStateChanges {
-    return _auth.authStateChanges().map((firebaseUser) {
+    return _auth.idTokenChanges().map((firebaseUser) {
       if (firebaseUser == null) return null;
       return _mapFirebaseUser(firebaseUser);
     });
